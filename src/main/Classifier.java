@@ -1,50 +1,51 @@
 package main;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import data.Dataset;
 import data.Record;
-import data.attribute.AttributeType;
 import data.attribute.Attributelist;
 import tree.DecisionTree;
 import tree.node.InternalNode;
+import tree.node.Node;
 
 public class Classifier {
-	private Dataset trainData;
-	private Attributelist attrlist;
-
-	public Classifier(Dataset ds, Attributelist al) {
-		this.trainData = ds;
-		this.attrlist = al;
-	}
-	public Classifier(Path datasetPath, Path attrlistPath) {
-		this.attrlist = new Attributelist(attrlistPath);
-		this.trainData = new Dataset(datasetPath, attrlist);
+	public Classifier() {
 	}
 
-	private DecisionTree run() {
-		// 0.入力の存在，全TupleとAttributeListの次元の一致を確認
-		if (!isReady()) {
+	public DecisionTree run(Path datasetPath, Path attrlistPath) {
+		Attributelist attrlist = new Attributelist(attrlistPath);
+		Dataset trainData = new Dataset(datasetPath, attrlist);
+		return run(trainData, attrlist);
+	}
+	public DecisionTree run(Dataset trainData, Attributelist attrlist) {
+		// 0.全TupleとAttributeListの次元の一致を確認
+		if (!isReady(trainData, attrlist)) {
 			System.err.println("Input Error.");
 			return null;
 		}
 
+		DecisionTree tree = new DecisionTree();
+
 		// 1.ルートNode作成
-		InternalNode rootNode = new InternalNode();
-		DecisionTree tree = new DecisionTree(rootNode);
+		Node node = new InternalNode();
+		tree.setRoot(node);
 
-		// 2.全てのTupleのクラスAttributeValueが同じならルートNodeにCをラベル付けして終了
+		// 2.全てのTupleのクラス属性値が同じCならルートにCをラベル付けして終了
+		if (trainData.matchAllValue()) {
 
+			return tree;
+		}
+
+		// 3.Attributelistが空ならノードに全Tuple中最も多い属性値をラベルづけして終了
+		if (attrlist.isEmpty()) {
+
+			return tree;
+		}
 
 	}
 
-	private boolean isReady() {
-		if (trainData == null || attrlist == null)	// データセットか属性リストの欠如
-			return false;
+	private boolean isReady(Dataset trainData, Attributelist attrlist) {
 		int dimension = attrlist.size();
 		for (Record r : trainData.getSet())
 			if (r.getTuple().size() != dimension)	// 次元の不一致

@@ -7,7 +7,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
+
+import data.Dataset;
 
 public class Attributelist {
 	private List<AbstractAttribute> attrlist;
@@ -41,6 +44,23 @@ public class Attributelist {
 	/* Listの基本メソッド */
 	public int size() {
 		return attrlist.size();
+	}
+	public boolean isEmpty() {
+		return attrlist.isEmpty();
+	}
+
+	public List<AttributeType> replaceContinuousAttribute(Dataset dataset) {
+		List<AttributeType> types = new ArrayList<>(size());
+		for (ListIterator<AbstractAttribute> lsitr = attrlist.listIterator(); lsitr.hasNext(); ) {
+			NominalAttribute na = (NominalAttribute) lsitr.next();
+			if(na.hasOnlyNumber()) {			// 全ての属性値が連続値なら
+				lsitr.set(na.toContinuous());	// 数値属性に置き換える
+				types.add(AttributeType.Continuous);
+			} else {
+				types.add(AttributeType.Nominal);
+			}
+		}
+		return types;
 	}
 
 }

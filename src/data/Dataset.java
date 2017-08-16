@@ -20,11 +20,10 @@ import data.value.AbstractValue;
 
 public class Dataset {
 	private Set<Record> records;
-	private List<AttributeType> types;
 
 	public Dataset(Set<Record> rs, Attributelist attrlist) {
 		this.records = rs;
-		this.types = judgeAttributeTypes(attrlist);
+		attrlist.replaceContinuousAttribute(this);
 	}
 	public Dataset() {
 		this(new HashSet<Record>(), new Attributelist());
@@ -37,39 +36,27 @@ public class Dataset {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.types = judgeAttributeTypes(attrlist);
-	}
-
-	private List<AttributeType> judgeAttributeTypes(Attributelist attrlist) {
-		List<AttributeType> types = new ArrayList<>(attrlist.size());
-		for (ListIterator<AbstractAttribute> lsitr = attrlist.getList().listIterator(); lsitr.hasNext(); ) {
-			NominalAttribute na = (NominalAttribute) lsitr.next();
-			if(na.hasOnlyNumber()) {			// 全ての属性値が連続値なら
-				lsitr.set(na.toContinuous());	// 数値属性に置き換える
-				types.add(AttributeType.Continuous);
-			} else {
-				types.add(AttributeType.Nominal);
-			}
-		}
-		return types;
-	}
-
-	/**
-	 * このデータセットのRecordのSetを属性値のListにして返します．行の集まりを列の集まりにする．
-	 * @return このデータセット内の属性の値のリスト
-	 */
-	private List<AbstractValue> getColumn(int index) {
-		return records.stream()
-				.map(r -> r.getTuple())			// レコードからタプル取り出し
-				.map(t -> t.get(index))			// タプルのindex番目の値取り出し
-				.collect(Collectors.toList());	// リスト化
+		// Recordを全て用意したあと，属性リストから連続値属性を探し出して置き換える処理を呼ぶ
+		attrlist.replaceContinuousAttribute(this);
 	}
 
 	/* getter */
 	public Set<Record> getSet() {
 		return records;
 	}
-	public List<AttributeType> getTypes() {
-		return types;
+
+	/**
+	 * 全てのレコードが同じクラス属性値をもつならtrueを、2種類以上のクラス属性値があればfalseを返す。
+	 * @return 全てのレコードが同じクラス属性値をもつ場合はtrue
+	 */
+	public boolean matchAllValue() {
+		AbstractValue v = null;
+		for (Record r : records) {
+			if (v!=null)
+				if (!v.equals(r.getClassValue()))
+					return false;
+			v = r.getClassValue();
+		}
+		return true;
 	}
 }

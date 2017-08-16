@@ -3,11 +3,11 @@ package tree.node;
 import data.value.AbstractValue;
 
 public class LeafNode extends Node {
-	private AbstractValue classAttrValue;
+	private AbstractValue classValue;
 
-	public LeafNode(AbstractValue cav) {
+	public LeafNode(AbstractValue cv) {
 		super();
-		this.classAttrValue = cav;
+		this.classValue = cv;
 	}
 	public LeafNode() {
 		this(null);
