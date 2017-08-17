@@ -13,6 +13,9 @@ import java.util.stream.Stream;
 
 import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
+import data.attribute.ContinuousAttribute;
+import data.attribute.NominalAttribute;
+import data.value.AbstractValue;
 import data.value.NominalValue;
 
 public class Dataset {
@@ -46,6 +49,7 @@ public class Dataset {
 	public int size() {
 		return records.size();
 	}
+
 
 	/**
 	 * 全てのレコードが同じクラス属性値をもつならその属性値を、2種類以上のクラス属性値があればnullを返す。
@@ -99,7 +103,7 @@ public class Dataset {
 	 * 情報利得率で分割属性を決める。
 	 * @return
 	 */
-	public AbstractAttribute getJudgeAttrByGainRation() {
+	public AbstractAttribute<?> getJudgeAttrByGainRation() {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}
@@ -118,4 +122,32 @@ public class Dataset {
 		}
 		return info;
 	}
+	private double infoByAttr(AbstractAttribute attr) {
+		double infoA = 0;
+		int datasetSize = size();
+		Map<NominalValue, Integer> classValFreq = countClassFreqency();
+		for (Map.Entry<NominalValue, Integer> entry : classValFreq.entrySet()) {
+			int freq = entry.getValue();
+			double prob = freq/datasetSize;
+			infoA += prob * Math.log(prob)/Math.log(2);
+		}
+		return infoA;
+	}
+
+	public Map<AbstractValue<?>, Dataset> splitSetBy(AbstractAttribute<?> splitAttr) {
+		Map<AbstractValue<?>, Dataset> subsets = new HashMap<>();
+		if (splitAttr instanceof NominalAttribute) {
+			NominalAttribute splitNA = (NominalAttribute) splitAttr;
+			for (NominalValue nv : splitNA.getAllValues()) {
+
+			}
+		} else if (splitAttr instanceof ContinuousAttribute) {
+
+		}
+	}
+
+	private double splitInfo() {
+
+	}
+
 }

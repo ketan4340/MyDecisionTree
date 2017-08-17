@@ -2,18 +2,34 @@ package data.value;
 
 import data.attribute.AbstractAttribute;
 
-public abstract class AbstractValue {
-	protected AbstractAttribute attr;
+public abstract class AbstractValue<E> {
+	protected E elem;									// 値
+	//protected AbstractAttribute<AbstractValue<E>> attr;	// 所属する属性
+	protected AbstractAttribute<AbstractValue<E>> attr;	// 所属する属性
 
-	public AbstractValue(AbstractAttribute a) {
-		this.attr = a;
+	/** コンストラクタ */
+	protected <V extends AbstractValue<E>> AbstractValue(E e, AbstractAttribute<V> aa) {
+		this.elem = e;
+		this.attr = (AbstractAttribute<AbstractValue<E>>) aa;
+		this.attr.addValue(this);
+	}
+	protected AbstractValue(E e) {
+		this.elem = e;
 	}
 
-	public abstract <E> E getElem();
-
 	/** getter */
-	public AbstractAttribute getAttr() {
+	public E getElem() {
+		return elem;
+	}
+	public AbstractAttribute<AbstractValue<E>> getAttr() {
 		return attr;
+	}
+	/** setter */
+	public void setElem(E elem) {
+		this.elem = elem;
+	}
+	public void setAttr(AbstractAttribute<AbstractValue<E>> attr) {
+		this.attr = attr;
 	}
 
 	/** hashCode/equals */
@@ -35,7 +51,7 @@ public abstract class AbstractValue {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractValue other = (AbstractValue) obj;
+		AbstractValue<E> other = (AbstractValue<E>) obj;
 		if (attr == null) {
 			if (other.attr != null)
 				return false;

@@ -1,35 +1,27 @@
 package data.attribute;
 
-import data.value.AbstractValue;
+import java.util.Collections;
+import java.util.Set;
+
 import data.value.ContinuousValue;
 
 /** 数値属性(連続値) */
-public class ContinuousAttribute extends AbstractAttribute {
-	private double min;
-	private double max;
+public class ContinuousAttribute extends AbstractAttribute<ContinuousValue> {
+	private static ContinuousValue MIN = new ContinuousValue(Double.MIN_VALUE);
+	private static ContinuousValue MAX = new ContinuousValue(Double.MAX_VALUE);
 
-	public ContinuousAttribute(String label, double min, double max) {
-		super(label);
-		this.min = min;
-		this.max = max;
+	public ContinuousAttribute(String label, Set<ContinuousValue> values) {
+		super(label, values);
 	}
 	public ContinuousAttribute(String label) {
-		this(label, Double.MAX_VALUE, Double.MIN_VALUE);
+		super(label);
 	}
 
-	@Override
-	public void addValue(AbstractValue av) {
-		ContinuousValue cv = (ContinuousValue) av;
-		double v = cv.getElem();
-		if (v < min) min = v;
-		if (v > max) max = v;
-	}
 
-	/* getter */
-	public double getMin() {
-		return min;
+	public ContinuousValue getMin() {
+		return Collections.min(allValues);
 	}
-	public double getMax() {
-		return max;
+	public ContinuousValue getMax() {
+		return Collections.max(allValues);
 	}
 }

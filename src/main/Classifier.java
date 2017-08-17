@@ -8,9 +8,7 @@ import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
 import data.value.AbstractValue;
 import tree.DecisionTree;
-import tree.node.InternalNode;
 import tree.node.LeafNode;
-import tree.node.Node;
 
 public class Classifier {
 	public Classifier() {
@@ -35,7 +33,7 @@ public class Classifier {
 		tree.setRoot(node);
 
 		// 2.全てのTupleのクラス属性値が同じCならルートにCをラベル付けして終了
-		AbstractValue commonClassValue = trainData.getCommonClassValue();
+		AbstractValue<?> commonClassValue = trainData.getCommonClassValue();
 		if (commonClassValue != null) {
 			node.setClassValue(commonClassValue);
 			return tree;
@@ -48,7 +46,7 @@ public class Classifier {
 		}
 
 		// 4.利得率から判定する属性を選び，分岐させる
-		AbstractAttribute judgeAttr = trainData.getJudgeAttrByGainRation();
+		AbstractAttribute<?> judgeAttr = trainData.getJudgeAttrByGainRation();
 	}
 
 	private boolean isReady(Dataset trainData, Attributelist attrlist) {

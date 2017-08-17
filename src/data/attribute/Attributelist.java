@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 import data.Dataset;
 
 public class Attributelist {
-	private List<AbstractAttribute> attrlist;
+	private List<AbstractAttribute<?>> attrlist;
 
-	public Attributelist(List<AbstractAttribute> al) {
+	public Attributelist(List<AbstractAttribute<?>> al) {
 		this.attrlist = al;
 	}
 	public Attributelist() {
-		this(new ArrayList<AbstractAttribute>());
+		this(new ArrayList<AbstractAttribute<?>>());
 	}
 	public Attributelist(Path path) {
 		try {
@@ -37,7 +37,7 @@ public class Attributelist {
 	}
 
 	/* getter */
-	public List<AbstractAttribute> getList() {
+	public List<AbstractAttribute<?>> getList() {
 		return attrlist;
 	}
 
@@ -51,7 +51,7 @@ public class Attributelist {
 
 	public List<AttributeType> replaceContinuousAttribute(Dataset dataset) {
 		List<AttributeType> types = new ArrayList<>(size());
-		for (ListIterator<AbstractAttribute> lsitr = attrlist.listIterator(); lsitr.hasNext(); ) {
+		for (ListIterator<AbstractAttribute<?>> lsitr = attrlist.listIterator(); lsitr.hasNext(); ) {
 			NominalAttribute na = (NominalAttribute) lsitr.next();
 			if(na.hasOnlyNumber()) {			// 全ての属性値が連続値なら
 				lsitr.set(na.toContinuous());	// 数値属性に置き換える

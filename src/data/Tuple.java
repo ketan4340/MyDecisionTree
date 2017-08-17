@@ -5,20 +5,20 @@ import java.util.List;
 import data.value.AbstractValue;
 
 public class Tuple {
-	private List<AbstractValue> attrs;
+	private List<AbstractValue<?>> attrs;
 
-	public Tuple(List<AbstractValue> al) {
+	public Tuple(List<AbstractValue<?>> al) {
 		this.attrs = al;
 	}
 
 
 	/* getter */
-	public List<AbstractValue> getValueList() {
+	public List<AbstractValue<?>> getValueList() {
 		return attrs;
 	}
 
 	/* List用 */
-	public AbstractValue get(int index) {
+	public AbstractValue<?> get(int index) {
 		return attrs.get(index);
 	}
 	public int size() {

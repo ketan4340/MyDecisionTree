@@ -8,29 +8,29 @@ import data.value.AbstractValue;
 import tree.edge.Edge;
 
 public class LeafNode extends Node {
-	private AbstractValue classValue;
+	private AbstractValue<?> classValue;
 
 	/** コンストラクタ */
-	public LeafNode(Edge parent, List<Edge> children, AbstractValue classValue) {
+	public LeafNode(Edge parent, List<Edge> children, AbstractValue<?> classValue) {
 		super(parent, children);
 		this.classValue = classValue;
 	}
-	public LeafNode(AbstractValue classValue) {
+	public LeafNode(AbstractValue<?> classValue) {
 		this(null, new LinkedList<>(), classValue);
 	}
 	public LeafNode() {
-		this((AbstractValue)null);
+		this((AbstractValue<?>)null);
 	}
-	public LeafNode(Node n, AbstractValue classValue) {
+	public LeafNode(Node n, AbstractValue<?> classValue) {
 		super(n);
 		this.classValue = classValue;
 	}
 
 	/** getter/setter */
-	public AbstractValue getClassValue() {
+	public AbstractValue<?> getClassValue() {
 		return classValue;
 	}
-	public void setClassValue(AbstractValue classValue) {
+	public void setClassValue(AbstractValue<?> classValue) {
 		this.classValue = classValue;
 	}
 
@@ -39,7 +39,7 @@ public class LeafNode extends Node {
 	 * @param judgeAttr 置き換えるInternalNodeの判定属性
 	 * @return 置き換えたInternalNode
 	 */
-	public InternalNode toInternal(AbstractAttribute judgeAttr) {
+	public InternalNode toInternal(AbstractAttribute<?> judgeAttr) {
 		return new InternalNode(
 				this.getParentEdge(),
 				this.getChildEdges(),

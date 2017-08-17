@@ -1,22 +1,32 @@
 package data.attribute;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import data.value.AbstractValue;
 
-public abstract class AbstractAttribute {
+public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 	protected String label;
+	protected Set<V> allValues;
 
-	public AbstractAttribute(String l) {
+	protected AbstractAttribute(String l, Set<V> values) {
 		this.label = l;
+		this.allValues = values;
 	}
-	public AbstractAttribute() {
-		this("");
+	protected AbstractAttribute(String l) {
+		this(l, new HashSet<V>());
 	}
 
-	public abstract void addValue(AbstractValue av);
+	public void addValue(V value) {
+		allValues.add(value);
+	}
 
 	/** getter */
 	public String getLabel() {
 		return label;
+	}
+	public Set<V> getAllValues() {
+		return allValues;
 	}
 
 	/** hashCode */
@@ -36,7 +46,7 @@ public abstract class AbstractAttribute {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractAttribute other = (AbstractAttribute) obj;
+		AbstractAttribute<V> other = (AbstractAttribute<V>) obj;
 		if (label == null) {
 			if (other.label != null)
 				return false;
