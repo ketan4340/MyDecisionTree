@@ -4,19 +4,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import data.attribute.AbstractAttribute;
-import data.attribute.AttributeType;
 import data.attribute.Attributelist;
-import data.attribute.NominalAttribute;
-import data.value.AbstractValue;
+import data.value.NominalValue;
 
 public class Dataset {
 	private Set<Record> records;
@@ -40,23 +37,85 @@ public class Dataset {
 		attrlist.replaceContinuousAttribute(this);
 	}
 
-	/* getter */
+	/** getter */
 	public Set<Record> getSet() {
 		return records;
 	}
 
+	/** Set用メソッド */
+	public int size() {
+		return records.size();
+	}
+
 	/**
-	 * 全てのレコードが同じクラス属性値をもつならtrueを、2種類以上のクラス属性値があればfalseを返す。
-	 * @return 全てのレコードが同じクラス属性値をもつ場合はtrue
+	 * 全てのレコードが同じクラス属性値をもつならその属性値を、2種類以上のクラス属性値があればnullを返す。
+	 * @return 全てのレコードの同じクラス属性値。不一致の場合null
 	 */
-	public boolean matchAllValue() {
-		AbstractValue v = null;
+	public NominalValue getCommonClassValue() {
+		NominalValue nv = null;
 		for (Record r : records) {
-			if (v!=null)
-				if (!v.equals(r.getClassValue()))
-					return false;
-			v = r.getClassValue();
+			if (nv!=null)
+				if (!nv.equals(r.getClassValue()))
+					return null;
+			nv = r.getClassValue();
 		}
-		return true;
+		return nv;
+	}
+
+	/**
+	 * 全てのタプルのクラス属性値でもっとも多いものを返す。
+	 * @return 最頻度のクラス属性値
+	 */
+	public NominalValue getMajorityClassValue() {
+		// カウントパート
+		Map<NominalValue, Integer> valueFreqency = countClassFreqency();
+		// 最頻度属性値選出パート
+		NominalValue majValue = null;
+		int highFreq = 0;
+		for (Map.Entry<NominalValue, Integer> entry : valueFreqency.entrySet()) {
+			int freq = entry.getValue();
+			if (freq > highFreq) {
+				majValue = entry.getKey();
+				highFreq = freq;
+			}
+		}
+		return majValue;
+	}
+	/**
+	 * クラス属性値ごとのデータセットでの出現頻度をMapにして返す
+	 * @return クラス属性値の出現頻度
+	 */
+	private Map<NominalValue, Integer> countClassFreqency() {
+		Map<NominalValue, Integer> classValFreq = new HashMap<>();
+		for (Record r : records) {
+			NominalValue nv = r.getClassValue();
+			int count = classValFreq.getOrDefault(nv, 0) + 1;
+			classValFreq.put(nv, count);
+		}
+		return classValFreq;
+	}
+
+	/**
+	 * 情報利得率で分割属性を決める。
+	 * @return
+	 */
+	public AbstractAttribute getJudgeAttrByGainRation() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+	/**
+	 * 情報量。エントロピー。
+	 * @return
+	 */
+	private double info() {
+		double info = 0;
+		int datasetSize = size();
+		Map<NominalValue, Integer> classValFreq = countClassFreqency();
+		for (Map.Entry<NominalValue, Integer> entry : classValFreq.entrySet()) {
+			int freq = entry.getValue();
+			double prob = freq/datasetSize;
+			info += prob * Math.log(prob)/Math.log(2);
+		}
+		return info;
 	}
 }

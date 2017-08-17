@@ -11,6 +11,11 @@ public abstract class AbstractValue {
 
 	public abstract <E> E getElem();
 
+	/** getter */
+	public AbstractAttribute getAttr() {
+		return attr;
+	}
+
 	/** hashCode/equals */
 	/** hashCode */
 	@Override
@@ -20,6 +25,7 @@ public abstract class AbstractValue {
 		result = prime * result + ((attr == null) ? 0 : attr.hashCode());
 		return result;
 	}
+
 	/** equals */
 	@Override
 	public boolean equals(Object obj) {

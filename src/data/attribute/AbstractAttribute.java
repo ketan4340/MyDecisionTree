@@ -1,8 +1,5 @@
 package data.attribute;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import data.value.AbstractValue;
 
 public abstract class AbstractAttribute {

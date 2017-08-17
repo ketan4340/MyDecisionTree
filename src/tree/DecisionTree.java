@@ -1,9 +1,5 @@
 package tree;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import tree.edge.Edge;
 import tree.node.Node;
 
 public class DecisionTree {

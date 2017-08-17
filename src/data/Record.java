@@ -13,16 +13,16 @@ import data.value.NominalValue;
 
 public class Record {
 	private Tuple tuple;
-	private AbstractValue classValue;
+	private NominalValue classValue;
 
-	public Record(Tuple t, AbstractValue v) {
+	public Record(Tuple t, NominalValue v) {
 		this.tuple = t;
 		this.classValue = v;
 	}
 	public Record(String values_str, Attributelist attrlist) {
 		List<AbstractValue> valueList = string2ValueList(values_str, attrlist);
 		this.tuple = new Tuple(valueList.subList(0, valueList.size()-1));	// 最後尾以外が属性ベクトル
-		this.classValue = valueList.get(valueList.size()-1);	// 最後尾がクラス属性値
+		this.classValue = (NominalValue) valueList.get(valueList.size()-1);	// 最後尾がクラス属性値
 	}
 	private List<AbstractValue> string2ValueList(String values_st, Attributelist attrlist) {
 		List<String> valueList_st = Arrays.asList(values_st.split(","));
@@ -38,6 +38,7 @@ public class Record {
 		}
 		return valueList;
 	}
+
 	/* List用メソッド */
 	public int size() {
 		return tuple.size();
@@ -47,7 +48,7 @@ public class Record {
 	public Tuple getTuple() {
 		return tuple;
 	}
-	public AbstractValue getClassValue() {
+	public NominalValue getClassValue() {
 		return classValue;
 	}
 }

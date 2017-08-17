@@ -9,15 +9,18 @@ import java.util.stream.Collectors;
 import tree.edge.Edge;
 
 public class Node {
-	protected Edge parentEdge;
-	protected List<Edge> childEdges;
+	private Edge parentEdge;
+	private List<Edge> childEdges;
 
-	public Node(Edge pe, Collection <? extends Edge> cec) {
-		this.parentEdge = pe;
-		this.childEdges = new LinkedList<>(cec);
+	public Node(Edge pe, List<Edge> cec) {
+		setParentEdge(pe);
+		setChildEdges(cec);
 	}
 	public Node() {
-		this(new Edge(), new LinkedList<>());
+		this(null, new LinkedList<>());
+	}
+	public Node(Node n) {
+		this(n.getParentEdge(), n.getChildEdges());
 	}
 
 
@@ -25,25 +28,29 @@ public class Node {
 	public Edge getParentEdge() {
 		return parentEdge;
 	}
+	// 指定されたEdgeの接続先がこのNodeであることも設定する特別なセッター
 	public void setParentEdge(Edge parentEdge) {
 		this.parentEdge = parentEdge;
+		parentEdge.setToNode(this);
 	}
 	public List<Edge> getChildEdges() {
 		return childEdges;
 	}
+	// 指定されたEdge全ての接続元がこのNodeであることも設定する特別なセッター
 	public void setChildEdges(List<Edge> childEdges) {
 		this.childEdges = childEdges;
+		childEdges.stream().forEach(ce -> ce.setFromNode(this));
 	}
 
 	public Node getParent() {
 		return parentEdge.getFromNode();
 	}
 	public Node getChildAt(int index) {
-		return childEdges.get(index).getFromNode();
+		return childEdges.get(index).getToNode();
 	}
 	public List<Node> getChildren() {
 		return childEdges.stream()
-				.map(ce -> ce.getFromNode())
+				.map(ce -> ce.getToNode())
 				.collect(Collectors.toList());
 	}
 

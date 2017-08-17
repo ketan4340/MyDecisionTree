@@ -4,9 +4,12 @@ import java.nio.file.Path;
 
 import data.Dataset;
 import data.Record;
+import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
+import data.value.AbstractValue;
 import tree.DecisionTree;
 import tree.node.InternalNode;
+import tree.node.LeafNode;
 import tree.node.Node;
 
 public class Classifier {
@@ -28,21 +31,24 @@ public class Classifier {
 		DecisionTree tree = new DecisionTree();
 
 		// 1.ルートNode作成
-		Node node = new InternalNode();
+		LeafNode node = new LeafNode();
 		tree.setRoot(node);
 
 		// 2.全てのTupleのクラス属性値が同じCならルートにCをラベル付けして終了
-		if (trainData.matchAllValue()) {
-
+		AbstractValue commonClassValue = trainData.getCommonClassValue();
+		if (commonClassValue != null) {
+			node.setClassValue(commonClassValue);
 			return tree;
 		}
 
 		// 3.Attributelistが空ならノードに全Tuple中最も多い属性値をラベルづけして終了
 		if (attrlist.isEmpty()) {
-
+			node.setClassValue(trainData.getMajorityClassValue());
 			return tree;
 		}
 
+		// 4.利得率から判定する属性を選び，分岐させる
+		AbstractAttribute judgeAttr = trainData.getJudgeAttrByGainRation();
 	}
 
 	private boolean isReady(Dataset trainData, Attributelist attrlist) {
