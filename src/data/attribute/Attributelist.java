@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
+import data.value.AbstractValue;
+
 public class Attributelist implements Cloneable{
 	private List<AbstractAttribute<?>> attrs;
 
@@ -52,8 +54,8 @@ public class Attributelist implements Cloneable{
 		return attrs.listIterator();
 	}
 
-	public boolean removeAttr(NominalAttribute splitNA) {
-		return attrs.remove(splitNA);
+	public boolean removeAttr(AbstractAttribute<?> removeAttr) {
+		return attrs.remove(removeAttr);
 	}
 
 	/** clone */

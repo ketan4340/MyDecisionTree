@@ -76,10 +76,10 @@ public class Record implements Cloneable{
 	}
 
 	/** このレコードの指定された属性に対応する値を返す。 */
-	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> splitAttr) {
-		return tuple.getValueInAttr(splitAttr);
+	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> attr) {
+		return tuple.getValueInAttr(attr);
 	}
-	public boolean removeValueInAttr(AbstractAttribute<?> splitAttr) {
-		return tuple.removeValueInAttr(splitAttr);
+	public boolean removeValueInAttr(AbstractAttribute<?> removeAttr) {
+		return tuple.removeValueInAttr(removeAttr);
 	}
 }

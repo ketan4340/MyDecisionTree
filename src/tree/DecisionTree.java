@@ -5,8 +5,8 @@ import tree.node.Node;
 public class DecisionTree {
 	private Node root;
 
-	public DecisionTree(Node r) {
-		this.root = r;
+	public DecisionTree(Node root) {
+		this.root = root;
 	}
 	public DecisionTree() {
 		this(null);

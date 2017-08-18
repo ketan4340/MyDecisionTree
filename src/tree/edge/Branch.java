@@ -16,4 +16,11 @@ public class Branch extends Edge {
 	public Branch() {
 		this(null);
 	}
+
+	/** toString */
+	@Override
+	public String toString() {
+		return "-" + selectedVal + "->";
+	}
+
 }

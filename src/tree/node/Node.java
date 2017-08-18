@@ -4,12 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import tree.edge.Branch;
 import tree.edge.Edge;
 
 public class Node {
-	private Edge parentEdge;
-	private List<Edge> childEdges;
+	protected Edge parentEdge;
+	protected List<Edge> childEdges;
 
+	/** コンストラクタ */
 	public Node(Edge parent, List<Edge> children) {
 		setParentEdge(parent);
 		setChildEdges(children);
@@ -26,12 +28,6 @@ public class Node {
 	public Edge getParentEdge() {
 		return parentEdge;
 	}
-	@Override
-	public String toString() {
-		return "n[" + getChildren().stream().map(n -> n.toString()).collect(Collectors.joining(",")) + "]";
-	}
-
-
 	// 指定されたEdgeの接続先がこのNodeであることも設定する特別なセッター
 	public void setParentEdge(Edge parentEdge) {
 		this.parentEdge = parentEdge;
@@ -59,7 +55,22 @@ public class Node {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public String toString() {
+		return "n[" + getChildren().stream().map(n -> n.toString()).collect(Collectors.joining(",")) + "]";
+	}
+
+
+
 	public boolean isRoot() {
 		return (parentEdge == null)? true: false;
+	}
+	public void addChildNode(Edge edge, Node child) {
+		edge.setFromNode(this);
+		edge.setToNode(child);
+		addChildEdge(edge);
+	}
+	private void addChildEdge(Edge edge) {
+		childEdges.add(edge);
 	}
 }

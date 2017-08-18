@@ -47,23 +47,23 @@ public class Tuple implements Cloneable{
 
 	/**
 	 * 指定の属性に対応する値を返す。
-	 * @param splitAttr
+	 * @param attr
 	 * @return 指定の属性に対応する値
 	 */
-	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> splitAttr) {
+	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> attr) {
 		for (AbstractValue<?> val : vector)
-			if (val.getAttr().equals(splitAttr))
+			if (val.getAttr().equals(attr))
 				return val;
 		return null;
 	}
 	/**
 	 * 指定の属性に対応する値を削除する。
-	 * @param splitAttr
+	 * @param removeAttr
 	 * @return 指定された属性に対応する値がこのタプルに含まれていた場合はtrue
 	 */
-	public boolean removeValueInAttr(AbstractAttribute<?> splitAttr) {
+	public boolean removeValueInAttr(AbstractAttribute<?> removeAttr) {
 		for (AbstractValue<?> val : vector)
-			if (val.getAttr().equals(splitAttr))
+			if (val.getAttr().equals(removeAttr))
 				return vector.remove(val);
 		return false;
 	}

@@ -45,16 +45,19 @@ public class Dataset implements Cloneable{
 		replaceContinuousAttribute();
 	}
 
-	/** getter */
+	/* getter */
 	public Set<Record> getSet() {
 		return records;
 	}
 	public Attributelist getAttrlist() {
 		return attrlist;
 	}
-	/** Set用メソッド */
+	/* Set用メソッド */
 	public int size() {
 		return records.size();
+	}
+	public boolean isEmpty() {
+		return records.isEmpty();
 	}
 	public boolean add(Record rcd) {
 		return records.add(rcd);
@@ -142,14 +145,14 @@ public class Dataset implements Cloneable{
 	 * 情報利得率で分割属性を決める。
 	 * @return 情報利得率が最高の属性
 	 */
-	public AbstractAttribute<?> getJudgeAttrByGainRation() {
-		System.out.println("Info\t= " + info());
+	public AbstractAttribute<?> getBestAttrByGainRation() {
+		//System.out.println("Info\t= " + info());//TODO
 		double maxGainRatio = 0;
 		AbstractAttribute<?> bestAttr = null;
 		for (AbstractAttribute<?> attr : attrlist.getList()) {
-			System.out.println(attr + "'s\tGainRatio ");	//TODO
+			//System.out.println(attr + "'s\tGainRatio ");	//TODO
 			double gainRatio = gainRatio(attr);
-			System.out.println("\t\tGainRatio = " + gainRatio);
+			//System.out.println("\t\tGainRatio = " + gainRatio);
 			if (gainRatio > maxGainRatio) {
 				maxGainRatio = gainRatio;
 				bestAttr = attr;
@@ -178,10 +181,10 @@ public class Dataset implements Cloneable{
 		Map<AbstractValue<?>, Dataset> subDatasets = splitByAttr(attr);
 		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
 			Dataset subDS = valDataEntry.getValue();
-			double subSize = valDataEntry.getValue().size();
+			double subSize = subDS.size();
 			infoAttr += subSize / thisSize * subDS.info();
 		}
-		System.out.println("\tinfoA\t= " + infoAttr);//TODO
+		//System.out.println("\tinfoA\t= " + infoAttr);//TODO
 		return infoAttr;
 	}
 	/** 属性attrによる情報利得 */
@@ -198,13 +201,13 @@ public class Dataset implements Cloneable{
 			double sizeRate = subSize / thisSize;
 			splitInfo -= sizeRate * Math.log(sizeRate)/Math.log(2);
 		}
-		System.out.println("\tsplitInfo\t= " + splitInfo);//TODO
+		//System.out.println("\tsplitInfo\t= " + splitInfo);//TODO
 		return splitInfo;
 	}
 	/** 情報利得率 */
 	private double gainRatio(AbstractAttribute<?> attr) {
 		double gain = gain(attr);
-		System.out.println("\tInfoGain\t= " + gain);
+		//System.out.println("\tInfoGain\t= " + gain);
 		return gain / splitInfoByAttr(attr);
 	}
 
@@ -214,7 +217,7 @@ public class Dataset implements Cloneable{
 	 * @return 指定属性の値と分割されたサブデータセットのマップ
 	 */
 	public Map<AbstractValue<?>, Dataset> splitByAttr(AbstractAttribute<?> splitAttr) {
-		Map<AbstractValue<?>, Dataset> subsetsMap = new HashMap<>();
+		Map<AbstractValue<?>, Dataset> subsetsMap = new HashMap<>(splitAttr.getAllValues().size());
 		if (splitAttr instanceof NominalAttribute) {
 			NominalAttribute splitNA = (NominalAttribute) splitAttr;
 			subsetsMap.putAll(splitByNominalAttr(splitNA));
@@ -222,10 +225,15 @@ public class Dataset implements Cloneable{
 			ContinuousAttribute splitCA = (ContinuousAttribute) splitAttr;
 			subsetsMap.putAll(splitByContinuousAttr(splitCA));
 		}
+		// 各サブデータセットとその属性リストから指定属性を削除する
+		for (Dataset ds : subsetsMap.values()) {
+			ds.removeValueInAttr(splitAttr);
+		}
 		return subsetsMap;
 	}
+	/** 離散値属性を基準に分割 */
 	private Map<NominalValue, Dataset> splitByNominalAttr(NominalAttribute splitNA) {
-		Map<NominalValue, Dataset> subsetsMap = new HashMap<>();
+		Map<NominalValue, Dataset> subsetsMap = new HashMap<>(splitNA.getAllValues().size());
 		// 該当属性の値の分だけ空のサブデータセットを用意
 		for (NominalValue nomVal : splitNA.getAllValues())
 			subsetsMap.put(nomVal, new Dataset(attrlist.clone()));
@@ -240,10 +248,15 @@ public class Dataset implements Cloneable{
 		}
 		return subsetsMap;
 	}
+	/** 連続値属性を基準に分割 */
 	private Map<ContinuousValue, Dataset> splitByContinuousAttr(ContinuousAttribute splitCA) {
-		//Map<ContinuousValue, Dataset> subsetsMap = new HashMap<>();
+		//Map<ContinuousValue, Dataset> subsetsMap = new HashMap<>(splitCA.getAllValues().size());
 		// TODO
 		return null;
 	}
-
+	private void removeValueInAttr(AbstractAttribute<?> removeAttr) {
+		attrlist.removeAttr(removeAttr);
+		for (Record r : records)
+			r.removeValueInAttr(removeAttr);
+	}
 }

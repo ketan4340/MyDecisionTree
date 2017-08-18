@@ -2,6 +2,7 @@ package tree.node;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import data.attribute.AbstractAttribute;
 import data.value.AbstractValue;
@@ -26,15 +27,21 @@ public class InternalNode extends Node{
 		this.judgeAttr = judgeAttr;
 	}
 
-	/** getter/setter */
+	/* getter/setter */
 	public AbstractAttribute<?> getJudgeAttr() {
 		return judgeAttr;
 	}
 	public void setJudgeAttr(AbstractAttribute<?> judgeAttr) {
 		this.judgeAttr = judgeAttr;
 	}
-
-
+	/** toString */
+	@Override
+	public String toString() {
+		return "[" + judgeAttr + "]\n" +
+	childEdges.stream()
+	.map(e -> "\t"+e.toString()+e.getToNode())
+	.collect(Collectors.joining(","));
+	}
 	/**
 	 * このInternalNodeをLeafNodeに置き換える。置き換えるLeafNodeはこのInternalNodeに接続されているEdgeを引き継ぐ。
 	 * @param classValue 置き換えるLeafNodeのクラス属性値

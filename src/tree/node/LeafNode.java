@@ -2,6 +2,7 @@ package tree.node;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import data.attribute.AbstractAttribute;
 import data.value.AbstractValue;
@@ -26,12 +27,20 @@ public class LeafNode extends Node {
 		this.classValue = classValue;
 	}
 
-	/** getter/setter */
+	/* getter/setter */
 	public AbstractValue<?> getClassValue() {
 		return classValue;
 	}
 	public void setClassValue(AbstractValue<?> classValue) {
 		this.classValue = classValue;
+	}
+	/** toString */
+	@Override
+	public String toString() {
+		return "(" + classValue + ")\n" +
+				childEdges.stream()
+				.map(e -> "\t"+e.toString()+e.getToNode())
+				.collect(Collectors.joining(","));
 	}
 
 	/**

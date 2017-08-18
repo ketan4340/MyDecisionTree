@@ -1,6 +1,7 @@
 package main;
 
 import java.nio.file.Path;
+import java.util.Map;
 
 import data.Dataset;
 import data.Record;
@@ -8,7 +9,10 @@ import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
 import data.value.AbstractValue;
 import tree.DecisionTree;
+import tree.edge.Branch;
+import tree.node.InternalNode;
 import tree.node.LeafNode;
+import tree.node.Node;
 
 public class Classifier {
 	public Classifier() {
@@ -20,6 +24,10 @@ public class Classifier {
 		return run(trainData);
 	}
 	public DecisionTree run(Dataset trainData) {
+		return new DecisionTree(generateDecisionTree(trainData));
+	}
+
+	private Node generateDecisionTree(Dataset trainData) {
 		Attributelist attrlist = trainData.getAttrlist();
 		// 0.全TupleとAttributeListの次元の一致を確認
 		if (!isReady(trainData)) {
@@ -27,29 +35,38 @@ public class Classifier {
 			return null;
 		}
 
-		DecisionTree tree = new DecisionTree();
-
 		// 1.ルートNode作成
-		LeafNode node = new LeafNode();
-		tree.setRoot(node);
+		Node node;
 
 		// 2.全てのTupleのクラス属性値が同じCならルートにCをラベル付けして終了
 		AbstractValue<?> commonClassValue = trainData.getCommonClassValue();
-		if (commonClassValue != null) {
-			node.setClassValue(commonClassValue);
-			return tree;
-		}
+		if (commonClassValue != null)
+			return new LeafNode(commonClassValue);
 
 		// 3.Attributelistが空ならノードに全Tuple中最も多い属性値をラベルづけして終了
-		if (attrlist.isEmpty()) {
-			node.setClassValue(trainData.getMajorityClassValue());
-			return tree;
-		}
+		if (attrlist.isEmpty())
+			return new LeafNode(trainData.getMajorityClassValue());
 
 		// 4.利得率から判定する属性を選び，分岐させる
-		AbstractAttribute<?> bestAttr = trainData.getJudgeAttrByGainRation();
+		AbstractAttribute<?> bestAttr = trainData.getBestAttrByGainRation();
+		node = new InternalNode(bestAttr);
+		Map<AbstractValue<?>, Dataset> subDatasets = trainData.splitByAttr(bestAttr);
+		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
+			AbstractValue<?> branchVal = valDataEntry.getKey();
+			Branch branch = new Branch(branchVal);
+			Dataset subDS = valDataEntry.getValue();
 
-		return null;
+			if (subDS.isEmpty()) {
+				AbstractValue<?> freqVal = trainData.getMajorityClassValue();
+				LeafNode freqChild = new LeafNode(freqVal);
+				node.addChildNode(branch, freqChild);
+			} else {
+				// 再帰的にノードを生成し繋げていく
+				Node recurChild = generateDecisionTree(subDS);
+				node.addChildNode(branch, recurChild);
+			}
+		}
+		return node;
 	}
 
 	private boolean isReady(Dataset trainData) {
