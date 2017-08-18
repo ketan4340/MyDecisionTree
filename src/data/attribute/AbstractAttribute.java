@@ -29,6 +29,7 @@ public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 		return allValues;
 	}
 
+	/** Object基本メソッド */
 	/** hashCode */
 	@Override
 	public int hashCode() {

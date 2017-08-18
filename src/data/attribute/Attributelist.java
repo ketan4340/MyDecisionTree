@@ -6,17 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import data.Dataset;
+import data.Tuple;
 
-public class Attributelist {
-	private List<AbstractAttribute<?>> attrlist;
+public class Attributelist implements Cloneable{
+	private List<AbstractAttribute<?>> attrs;
 
+	/** コンストラクタ */
 	public Attributelist(List<AbstractAttribute<?>> al) {
-		this.attrlist = al;
+		this.attrs = al;
 	}
 	public Attributelist() {
 		this(new ArrayList<AbstractAttribute<?>>());
@@ -24,43 +25,44 @@ public class Attributelist {
 	public Attributelist(Path path) {
 		try {
 			List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-			this.attrlist = lines.stream()						// 1行ずつ確認(大抵1行で十分書き切れる)
+			this.attrs = lines.stream()						// 1行ずつ確認(大抵1行で十分書き切れる)
 					.map(line -> line.split(","))				// カンマで分割
 					.flatMap(attrs -> Arrays.stream(attrs))		// 分割後の配列を展開
 					.map(attr -> attr.replaceAll("[ \t]", ""))	// ラベルのスペースやタブを削除
 					.map(label -> new NominalAttribute(label))	// 離散属性としてインスタンス生成(連続値はあとで変える)
 					.collect(Collectors.toList());				// リスト化
-			this.attrlist.add(new NominalAttribute("class"));	// 最後尾にクラス属性の分を追加
+			this.attrs.add(new NominalAttribute("class"));	// 最後尾にクラス属性の分を追加
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/* getter */
+	/** getter */
 	public List<AbstractAttribute<?>> getList() {
-		return attrlist;
+		return attrs;
 	}
 
 	/* Listの基本メソッド */
 	public int size() {
-		return attrlist.size();
+		return attrs.size();
 	}
 	public boolean isEmpty() {
-		return attrlist.isEmpty();
+		return attrs.isEmpty();
 	}
 
-	public List<AttributeType> replaceContinuousAttribute(Dataset dataset) {
-		List<AttributeType> types = new ArrayList<>(size());
-		for (ListIterator<AbstractAttribute<?>> lsitr = attrlist.listIterator(); lsitr.hasNext(); ) {
-			NominalAttribute na = (NominalAttribute) lsitr.next();
-			if(na.hasOnlyNumber()) {			// 全ての属性値が連続値なら
-				lsitr.set(na.toContinuous());	// 数値属性に置き換える
-				types.add(AttributeType.Continuous);
-			} else {
-				types.add(AttributeType.Nominal);
-			}
-		}
-		return types;
+	public boolean removeAttr(NominalAttribute splitNA) {
+		return attrs.remove(splitNA);
 	}
 
+	@Override
+	public Attributelist clone() {
+		try {
+			Attributelist c = (Attributelist) super.clone();
+	    	c.attrs = new LinkedList<>(this.attrs);	// 中身は複製しない(同じオブジェクトを参照する)
+	    	return c;
+	    } catch (CloneNotSupportedException ce) {
+            ce.printStackTrace();
+	    }
+	    return null;
+	}
 }

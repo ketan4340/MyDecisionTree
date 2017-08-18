@@ -9,4 +9,5 @@ public class NominalValue extends AbstractValue<String>{
 		super(e, na);
 	}
 
+
 }

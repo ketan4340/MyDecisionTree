@@ -4,7 +4,6 @@ import data.attribute.AbstractAttribute;
 
 public abstract class AbstractValue<E> {
 	protected E elem;									// 値
-	//protected AbstractAttribute<AbstractValue<E>> attr;	// 所属する属性
 	protected AbstractAttribute<AbstractValue<E>> attr;	// 所属する属性
 
 	/** コンストラクタ */
@@ -32,7 +31,7 @@ public abstract class AbstractValue<E> {
 		this.attr = attr;
 	}
 
-	/** hashCode/equals */
+	/** Object基本メソッド */
 	/** hashCode */
 	@Override
 	public int hashCode() {
@@ -41,7 +40,6 @@ public abstract class AbstractValue<E> {
 		result = prime * result + ((attr == null) ? 0 : attr.hashCode());
 		return result;
 	}
-
 	/** equals */
 	@Override
 	public boolean equals(Object obj) {
