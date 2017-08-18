@@ -24,13 +24,13 @@ public class Attributelist implements Cloneable{
 	public Attributelist(Path path) {
 		try {
 			List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
-			this.attrs = lines.stream()						// 1行ずつ確認(大抵1行で十分書き切れる)
+			this.attrs = lines.stream()							// 1行ずつ確認(大抵1行で十分書き切れる)
 					.map(line -> line.split(","))				// カンマで分割
 					.flatMap(attrs -> Arrays.stream(attrs))		// 分割後の配列を展開
 					.map(attr -> attr.replaceAll("[ \t]", ""))	// ラベルのスペースやタブを削除
 					.map(label -> new NominalAttribute(label))	// 離散属性としてインスタンス生成(連続値はあとで変える)
 					.collect(Collectors.toList());				// リスト化
-			this.attrs.add(new NominalAttribute("class"));	// 最後尾にクラス属性の分を追加
+			//this.attrs.add(new NominalAttribute("class"));		// 最後尾にクラス属性の分を追加
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,6 +56,7 @@ public class Attributelist implements Cloneable{
 		return attrs.remove(splitNA);
 	}
 
+	/** clone */
 	@Override
 	public Attributelist clone() {
 		try {
@@ -67,4 +68,10 @@ public class Attributelist implements Cloneable{
 	    }
 	    return null;
 	}
+	/** toString */
+	@Override
+	public String toString() {
+		return "Attributelist [attrs=" + attrs.stream().map(at -> at.toString()).collect(Collectors.joining(",")) + "]";
+	}
+
 }

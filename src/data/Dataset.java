@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import data.attribute.AbstractAttribute;
-import data.attribute.AttributeType;
 import data.attribute.Attributelist;
 import data.attribute.ContinuousAttribute;
 import data.attribute.NominalAttribute;
@@ -30,15 +27,10 @@ public class Dataset implements Cloneable{
 	/** コンストラクタ */
 	public Dataset(Set<Record> recordSet, Attributelist attrlist) {
 		this.records = recordSet;
-		// 可能なら離散値から連続値に置き換える
 		this.attrlist = attrlist;
-		replaceContinuousAttribute();
 	}
 	public Dataset(Attributelist attrlist) {
-		this.attrlist = attrlist;
-	}
-	public Dataset() {
-		this.records = new HashSet<Record>();
+		this(new HashSet<Record>(), attrlist);
 	}
 	public Dataset(Path path, Attributelist attrlist) {
 		try (Stream<String> stream = Files.lines(path, StandardCharsets.UTF_8)) {
@@ -57,7 +49,9 @@ public class Dataset implements Cloneable{
 	public Set<Record> getSet() {
 		return records;
 	}
-
+	public Attributelist getAttrlist() {
+		return attrlist;
+	}
 	/** Set用メソッド */
 	public int size() {
 		return records.size();
@@ -84,21 +78,16 @@ public class Dataset implements Cloneable{
 	 * 各属性をみて値が連続値なら数値属性(ContinuousAttribute)に置き換える
 	 * @return
 	 */
-	public List<AttributeType> replaceContinuousAttribute() {
-		List<AttributeType> types = new ArrayList<>(size());
+	public void replaceContinuousAttribute() {
 		ListIterator<AbstractAttribute<?>> attrItr = attrlist.listIterator();
 		while (attrItr.hasNext()) {
 			AbstractAttribute<?> attr = attrItr.next();
-			if (!(attr instanceof NominalAttribute)) continue;
+			if (!(attr instanceof NominalAttribute))
+				continue;
 			NominalAttribute nomAttr = (NominalAttribute) attr;
-			if(nomAttr.hasOnlyNumber()) {			// 全ての属性値が連続値なら
+			if(nomAttr.hasOnlyNumber())					// 全ての属性値が連続値なら
 				attrItr.set(nomAttr.toContinuous());	// 数値属性に置き換える
-				types.add(AttributeType.Continuous);
-			} else {
-				types.add(AttributeType.Nominal);
-			}
 		}
-		return types;
 	}
 
 	/**
@@ -154,30 +143,45 @@ public class Dataset implements Cloneable{
 	 * @return 情報利得率が最高の属性
 	 */
 	public AbstractAttribute<?> getJudgeAttrByGainRation() {
-
-		return null;
+		System.out.println("Info\t= " + info());
+		double maxGainRatio = 0;
+		AbstractAttribute<?> bestAttr = null;
+		for (AbstractAttribute<?> attr : attrlist.getList()) {
+			System.out.println(attr + "'s\tGainRatio ");	//TODO
+			double gainRatio = gainRatio(attr);
+			System.out.println("\t\tGainRatio = " + gainRatio);
+			if (gainRatio > maxGainRatio) {
+				maxGainRatio = gainRatio;
+				bestAttr = attr;
+			}
+		}
+		System.out.println("bestAttr:\t" + bestAttr);	// TODO
+		return bestAttr;
 	}
 	/** 情報量(エントロピー) */
 	private double info() {
 		double info = 0;
-		int datasetSize = size();
+		double thisSize = size();
 		Map<NominalValue, Integer> classValFreq = countClassFreqency();
 		for (Map.Entry<NominalValue, Integer> valFreqEntry : classValFreq.entrySet()) {
-			int freq = valFreqEntry.getValue();
-			double prob = freq/datasetSize;
-			info += prob * Math.log(prob)/Math.log(2);
+			double freq = valFreqEntry.getValue();
+			double prob = freq/thisSize;
+			info -= prob * Math.log(prob)/Math.log(2);
 		}
+		//System.out.println("\tinfo\t= " + info);//TODO
 		return info;
 	}
 	/** 属性attrで分割した後の情報量 */
 	private double infoByAttr(AbstractAttribute<?> attr) {
 		double infoAttr = 0;
-		int thisSize = size();
+		double thisSize = size();
 		Map<AbstractValue<?>, Dataset> subDatasets = splitByAttr(attr);
 		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
 			Dataset subDS = valDataEntry.getValue();
-			infoAttr += subDS.size() / thisSize * subDS.info();
+			double subSize = valDataEntry.getValue().size();
+			infoAttr += subSize / thisSize * subDS.info();
 		}
+		System.out.println("\tinfoA\t= " + infoAttr);//TODO
 		return infoAttr;
 	}
 	/** 属性attrによる情報利得 */
@@ -187,18 +191,21 @@ public class Dataset implements Cloneable{
 	/** 属性attrによる全情報量 */
 	private double splitInfoByAttr(AbstractAttribute<?> attr) {
 		double splitInfo = 0;
-		int thisSize = size();
+		double thisSize = size();
 		Map<AbstractValue<?>, Dataset> subDatasets = splitByAttr(attr);
 		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
-			Dataset subDS = valDataEntry.getValue();
-			double sizeRate = subDS.size() / thisSize;
+			double subSize = valDataEntry.getValue().size();
+			double sizeRate = subSize / thisSize;
 			splitInfo -= sizeRate * Math.log(sizeRate)/Math.log(2);
 		}
+		System.out.println("\tsplitInfo\t= " + splitInfo);//TODO
 		return splitInfo;
 	}
 	/** 情報利得率 */
 	private double gainRatio(AbstractAttribute<?> attr) {
-		return gain(attr) / splitInfoByAttr(attr);
+		double gain = gain(attr);
+		System.out.println("\tInfoGain\t= " + gain);
+		return gain / splitInfoByAttr(attr);
 	}
 
 	/**
@@ -219,28 +226,22 @@ public class Dataset implements Cloneable{
 	}
 	private Map<NominalValue, Dataset> splitByNominalAttr(NominalAttribute splitNA) {
 		Map<NominalValue, Dataset> subsetsMap = new HashMap<>();
-		// 該当属性を削除した属性リストを用意
-		Attributelist subAttrlist = attrlist.clone();
-		subAttrlist.removeAttr(splitNA);
 		// 該当属性の値の分だけ空のサブデータセットを用意
 		for (NominalValue nomVal : splitNA.getAllValues())
-			subsetsMap.put(nomVal, new Dataset(subAttrlist));
+			subsetsMap.put(nomVal, new Dataset(attrlist.clone()));
 		// 各レコードをチェックしてサブデータセットに振り分ける
 		for (Record rcd : records) {
 			// key
 			NominalValue nomVal = (NominalValue) rcd.getValueInAttr(splitNA);
 			// value
 			Dataset subDS = subsetsMap.get(nomVal);
-
-			// 該当属性の値を削除したレコードをサブデータセットに追加
-			Record reducedRcd = rcd.clone();
-			reducedRcd.removeValueInAttr(splitNA);
+			// レコードをサブデータセットに追加
 			subDS.add(rcd.clone());
 		}
 		return subsetsMap;
 	}
 	private Map<ContinuousValue, Dataset> splitByContinuousAttr(ContinuousAttribute splitCA) {
-		Map<ContinuousValue, Dataset> subsetsMap = new HashMap<>();
+		//Map<ContinuousValue, Dataset> subsetsMap = new HashMap<>();
 		// TODO
 		return null;
 	}

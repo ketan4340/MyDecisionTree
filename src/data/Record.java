@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
@@ -28,16 +29,17 @@ public class Record implements Cloneable{
 	/** カンマで値が区切られたString型の属性ベクトルをAbstractValueのリストにする。 */
 	private List<AbstractValue<?>> string2ValueList(String values_st, Attributelist attrlist) {
 		List<String> valueList_st = Arrays.asList(values_st.split(","));
-		if (valueList_st.size() != attrlist.size()) return null;
+		if (valueList_st.size() != attrlist.size() +1) return null;
 
 		List<AbstractValue<?>> valueList = new LinkedList<>();
-		Iterator<AbstractAttribute<?>> itrAttr = attrlist.getList().iterator();
-		Iterator<String> itrValue = valueList_st.iterator();
-		while (itrAttr.hasNext() && itrValue.hasNext()) {
-			NominalAttribute nomAttr = (NominalAttribute) itrAttr.next();
-			String val_st = itrValue.next();
+		Iterator<AbstractAttribute<?>> attrItr = attrlist.getList().iterator();
+		Iterator<String> valItr = valueList_st.iterator();
+		while (attrItr.hasNext() && valItr.hasNext()) {
+			NominalAttribute nomAttr = (NominalAttribute) attrItr.next();
+			String val_st = valItr.next();
 			valueList.add(new NominalValue(val_st, nomAttr));	// 最初は全て離散変数として扱う
 		}
+		valueList.add(new NominalValue(valItr.next()));	// 最後尾のクラス属性値も離散変数として扱う
 		return valueList;
 	}
 
@@ -51,7 +53,7 @@ public class Record implements Cloneable{
 
 	/* List用メソッド */
 	public int size() {
-		return tuple.size();
+		return tuple.size() + 1;
 	}
 
 	/** clone */
@@ -66,6 +68,11 @@ public class Record implements Cloneable{
             ce.printStackTrace();
 	    }
 	    return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Record [" + tuple + ", c:" + classValue + "]";
 	}
 
 	/** このレコードの指定された属性に対応する値を返す。 */

@@ -2,6 +2,7 @@ package data;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import data.attribute.AbstractAttribute;
 import data.value.AbstractValue;
@@ -37,6 +38,11 @@ public class Tuple implements Cloneable{
             ce.printStackTrace();
 	    }
 	    return null;
+	}
+
+	@Override
+	public String toString() {
+		return "Tuple [vector=" + vector.stream().map(val -> val.toString()).collect(Collectors.joining(",")) + "]";
 	}
 
 	/**

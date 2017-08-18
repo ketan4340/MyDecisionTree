@@ -8,6 +8,12 @@ public class NominalValue extends AbstractValue<String>{
 	public NominalValue(String e, NominalAttribute na) {
 		super(e, na);
 	}
+	public NominalValue(String e) {
+		super(e);
+	}
 
-
+	@Override
+	public String toString() {
+		return "NV:" + elem;
+	}
 }

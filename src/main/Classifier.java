@@ -17,11 +17,12 @@ public class Classifier {
 	public DecisionTree run(Path datasetPath, Path attrlistPath) {
 		Attributelist attrlist = new Attributelist(attrlistPath);
 		Dataset trainData = new Dataset(datasetPath, attrlist);
-		return run(trainData, attrlist);
+		return run(trainData);
 	}
-	public DecisionTree run(Dataset trainData, Attributelist attrlist) {
+	public DecisionTree run(Dataset trainData) {
+		Attributelist attrlist = trainData.getAttrlist();
 		// 0.全TupleとAttributeListの次元の一致を確認
-		if (!isReady(trainData, attrlist)) {
+		if (!isReady(trainData)) {
 			System.err.println("Input Error.");
 			return null;
 		}
@@ -46,14 +47,19 @@ public class Classifier {
 		}
 
 		// 4.利得率から判定する属性を選び，分岐させる
-		AbstractAttribute<?> judgeAttr = trainData.getJudgeAttrByGainRation();
+		AbstractAttribute<?> bestAttr = trainData.getJudgeAttrByGainRation();
+
+		return null;
 	}
 
-	private boolean isReady(Dataset trainData, Attributelist attrlist) {
-		int dimension = attrlist.size();
+	private boolean isReady(Dataset trainData) {
+		int dimension = trainData.getAttrlist().size();
+		boolean b = true;
 		for (Record r : trainData.getSet())
-			if (r.getTuple().size() != dimension)	// 次元の不一致
-				return false;
-		return true;
+			if (r.size() != dimension+1){	// 次元の不一致
+				System.err.println("ErrorRecord: " + r);
+				b = false;
+			}
+		return b;
 	}
 }

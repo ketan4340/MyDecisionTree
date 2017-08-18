@@ -43,5 +43,11 @@ public class NominalAttribute extends AbstractAttribute<NominalValue> {
 		}
 		return true;
 	}
+	@Override
+	public String toString() {
+		return "NmAt:" + label;
+	}
+
+
 
 }

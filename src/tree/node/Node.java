@@ -10,9 +10,9 @@ public class Node {
 	private Edge parentEdge;
 	private List<Edge> childEdges;
 
-	public Node(Edge pe, List<Edge> cec) {
-		setParentEdge(pe);
-		setChildEdges(cec);
+	public Node(Edge parent, List<Edge> children) {
+		setParentEdge(parent);
+		setChildEdges(children);
 	}
 	public Node() {
 		this(null, new LinkedList<>());
@@ -22,14 +22,21 @@ public class Node {
 	}
 
 
-	/** getter/setter */
+	/** getter */
 	public Edge getParentEdge() {
 		return parentEdge;
 	}
+	@Override
+	public String toString() {
+		return "n[" + getChildren().stream().map(n -> n.toString()).collect(Collectors.joining(",")) + "]";
+	}
+
+
 	// 指定されたEdgeの接続先がこのNodeであることも設定する特別なセッター
 	public void setParentEdge(Edge parentEdge) {
 		this.parentEdge = parentEdge;
-		parentEdge.setToNode(this);
+		if (parentEdge != null)
+			parentEdge.setToNode(this);
 	}
 	public List<Edge> getChildEdges() {
 		return childEdges;

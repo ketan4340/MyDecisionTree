@@ -31,16 +31,14 @@ public abstract class AbstractValue<E> {
 		this.attr = attr;
 	}
 
-	/** Object基本メソッド */
-	/** hashCode */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((attr == null) ? 0 : attr.hashCode());
+		result = prime * result + ((elem == null) ? 0 : elem.hashCode());
 		return result;
 	}
-	/** equals */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -49,12 +47,23 @@ public abstract class AbstractValue<E> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractValue<E> other = (AbstractValue<E>) obj;
+		AbstractValue other = (AbstractValue) obj;
 		if (attr == null) {
 			if (other.attr != null)
 				return false;
 		} else if (!attr.equals(other.attr))
 			return false;
+		if (elem == null) {
+			if (other.elem != null)
+				return false;
+		} else if (!elem.equals(other.elem))
+			return false;
 		return true;
+	}
+
+	/** toString */
+	@Override
+	public String toString() {
+		return "V:" + elem;
 	}
 }

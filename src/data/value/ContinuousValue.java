@@ -9,12 +9,16 @@ public class ContinuousValue extends AbstractValue<Double> implements Comparable
 		super(e, ca);
 	}
 	public ContinuousValue(double e) {
-		super(null);
+		super(e);
+	}
+
+	@Override
+	public String toString() {
+		return "CV:" + elem;
 	}
 
 	@Override
 	public int compareTo(ContinuousValue cv) {
 		return Double.compare(super.elem, cv.elem);
 	}
-
 }

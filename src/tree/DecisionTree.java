@@ -19,4 +19,8 @@ public class DecisionTree {
 	public void setRoot(Node rn) {
 		this.root = rn;
 	}
+	@Override
+	public String toString() {
+		return "DecisionTree [" + root + "]";
+	}
 }

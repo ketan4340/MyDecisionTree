@@ -55,4 +55,10 @@ public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 			return false;
 		return true;
 	}
+	/** toString */
+	@Override
+	public String toString() {
+		return "At:" + label;
+	}
+
 }
