@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
-
-import data.Tuple;
 
 public class Attributelist implements Cloneable{
 	private List<AbstractAttribute<?>> attrs;
@@ -48,6 +47,9 @@ public class Attributelist implements Cloneable{
 	}
 	public boolean isEmpty() {
 		return attrs.isEmpty();
+	}
+	public ListIterator<AbstractAttribute<?>> listIterator() {
+		return attrs.listIterator();
 	}
 
 	public boolean removeAttr(NominalAttribute splitNA) {

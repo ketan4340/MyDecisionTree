@@ -86,7 +86,7 @@ public class Dataset implements Cloneable{
 	 */
 	public List<AttributeType> replaceContinuousAttribute() {
 		List<AttributeType> types = new ArrayList<>(size());
-		ListIterator<AbstractAttribute<?>> attrItr = attrlist.getList().listIterator();
+		ListIterator<AbstractAttribute<?>> attrItr = attrlist.listIterator();
 		while (attrItr.hasNext()) {
 			AbstractAttribute<?> attr = attrItr.next();
 			if (!(attr instanceof NominalAttribute)) continue;
@@ -151,37 +151,54 @@ public class Dataset implements Cloneable{
 
 	/**
 	 * 情報利得率で分割属性を決める。
-	 * @return
+	 * @return 情報利得率が最高の属性
 	 */
 	public AbstractAttribute<?> getJudgeAttrByGainRation() {
-		// TODO 自動生成されたメソッド・スタブ
+
 		return null;
 	}
-	/**
-	 * 情報量。エントロピー。
-	 * @return
-	 */
+	/** 情報量(エントロピー) */
 	private double info() {
 		double info = 0;
 		int datasetSize = size();
 		Map<NominalValue, Integer> classValFreq = countClassFreqency();
-		for (Map.Entry<NominalValue, Integer> entry : classValFreq.entrySet()) {
-			int freq = entry.getValue();
+		for (Map.Entry<NominalValue, Integer> valFreqEntry : classValFreq.entrySet()) {
+			int freq = valFreqEntry.getValue();
 			double prob = freq/datasetSize;
 			info += prob * Math.log(prob)/Math.log(2);
 		}
 		return info;
 	}
-	private double infoByAttr(AbstractAttribute attr) {
-		double infoA = 0;
-		int datasetSize = size();
-		Map<NominalValue, Integer> classValFreq = countClassFreqency();
-		for (Map.Entry<NominalValue, Integer> entry : classValFreq.entrySet()) {
-			int freq = entry.getValue();
-			double prob = freq/datasetSize;
-			infoA += prob * Math.log(prob)/Math.log(2);
+	/** 属性attrで分割した後の情報量 */
+	private double infoByAttr(AbstractAttribute<?> attr) {
+		double infoAttr = 0;
+		int thisSize = size();
+		Map<AbstractValue<?>, Dataset> subDatasets = splitByAttr(attr);
+		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
+			Dataset subDS = valDataEntry.getValue();
+			infoAttr += subDS.size() / thisSize * subDS.info();
 		}
-		return infoA;
+		return infoAttr;
+	}
+	/** 属性attrによる情報利得 */
+	private double gain(AbstractAttribute<?> attr) {
+		return info() - infoByAttr(attr);
+	}
+	/** 属性attrによる全情報量 */
+	private double splitInfoByAttr(AbstractAttribute<?> attr) {
+		double splitInfo = 0;
+		int thisSize = size();
+		Map<AbstractValue<?>, Dataset> subDatasets = splitByAttr(attr);
+		for (Map.Entry<AbstractValue<?>, Dataset> valDataEntry : subDatasets.entrySet()) {
+			Dataset subDS = valDataEntry.getValue();
+			double sizeRate = subDS.size() / thisSize;
+			splitInfo -= sizeRate * Math.log(sizeRate)/Math.log(2);
+		}
+		return splitInfo;
+	}
+	/** 情報利得率 */
+	private double gainRatio(AbstractAttribute<?> attr) {
+		return gain(attr) / splitInfoByAttr(attr);
 	}
 
 	/**
@@ -208,7 +225,7 @@ public class Dataset implements Cloneable{
 		// 該当属性の値の分だけ空のサブデータセットを用意
 		for (NominalValue nomVal : splitNA.getAllValues())
 			subsetsMap.put(nomVal, new Dataset(subAttrlist));
-
+		// 各レコードをチェックしてサブデータセットに振り分ける
 		for (Record rcd : records) {
 			// key
 			NominalValue nomVal = (NominalValue) rcd.getValueInAttr(splitNA);
@@ -226,9 +243,6 @@ public class Dataset implements Cloneable{
 		Map<ContinuousValue, Dataset> subsetsMap = new HashMap<>();
 		// TODO
 		return null;
-	}
-	private double splitInfo() {
-
 	}
 
 }
