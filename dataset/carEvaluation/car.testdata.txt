@@ -1,0 +1,12 @@
+med,med,5more,more,med,high,vgood
+med,low,3,more,big,high,vgood
+med,med,5more,more,big,high,vgood
+med,med,5more,4,big,high,vgood
+low,high,2,4,big,high,vgood
+low,med,4,more,big,high,vgood
+low,med,4,4,med,high,vgood
+low,high,4,4,med,high,vgood
+low,med,4,more,med,high,vgood
+med,med,2,more,big,high,vgood
+med,med,3,more,big,high,vgood
+med,low,5more,more,big,high,vgood

@@ -9,7 +9,7 @@ import data.value.AbstractValue;
 import tree.edge.Edge;
 
 public class InternalNode extends Node{
-	private AbstractAttribute<?> judgeAttr;
+	private AbstractAttribute<?> judgeAttr;	// 判定に使う属性
 
 	/** コンストラクタ */
 	public InternalNode(Edge parent, List<Edge> children, AbstractAttribute<?> judgeAttr) {

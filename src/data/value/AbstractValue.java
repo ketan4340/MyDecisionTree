@@ -66,4 +66,7 @@ public abstract class AbstractValue<E> {
 	public String toString() {
 		return "V:" + elem;
 	}
+	public String toOriginalString() {
+		return elem.toString();
+	}
 }

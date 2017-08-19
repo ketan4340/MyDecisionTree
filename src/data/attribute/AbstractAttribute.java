@@ -60,5 +60,4 @@ public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 	public String toString() {
 		return "At:" + label;
 	}
-
 }

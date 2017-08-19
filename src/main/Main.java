@@ -16,7 +16,7 @@ public class Main {
 		Path datasetPath = Paths.get("dataset/example/exDataset.txt");
 		Path attrlistPath = Paths.get("dataset/example/exAttrlist.txt");
 		//*/
-		Classifier classifier = new Classifier();
+		DecisionTreeGenerator classifier = new DecisionTreeGenerator();
 		DecisionTree tree = classifier.run(datasetPath, attrlistPath);
 
 		System.out.println(tree);//TODO

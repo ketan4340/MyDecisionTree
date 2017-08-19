@@ -8,8 +8,8 @@ import tree.edge.Branch;
 import tree.edge.Edge;
 
 public class Node {
-	protected Edge parentEdge;
-	protected List<Edge> childEdges;
+	protected Edge parentEdge;			// 親ノードに続くエッジ
+	protected List<Edge> childEdges;	// 子ノードに続くエッジ
 
 	/** コンストラクタ */
 	public Node(Edge parent, List<Edge> children) {

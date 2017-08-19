@@ -74,6 +74,9 @@ public class Record implements Cloneable{
 	public String toString() {
 		return "Record [" + tuple + ", c:" + classValue + "]";
 	}
+	public String toOriginalString() {
+		return tuple.toOriginalString() + "," + classValue.getElem();
+	}
 
 	/** このレコードの指定された属性に対応する値を返す。 */
 	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> attr) {

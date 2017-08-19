@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -78,15 +82,22 @@ public class Dataset implements Cloneable{
 	}
 
 	public void collectClass(String val) {
+		List<String> list = new ArrayList<>();
 		for (Record r : records)
 			if(r.getClassValue().getElem().equals(val))
-				System.out.println(r);
+				list.add(r.toOriginalString());
+
+
+		Path dst = Paths.get("dataset/carEvaluation/car.train.data");
+		try {
+			Path r = Files.write(dst, list, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * 各属性をみて値が連続値なら数値属性(ContinuousAttribute)に置き換える
-	 * @return
-	 */
+	/** 各属性をみて値が連続値なら数値属性(ContinuousAttribute)に置き換える */
 	public void replaceContinuousAttribute() {
 		ListIterator<AbstractAttribute<?>> attrItr = attrlist.listIterator();
 		while (attrItr.hasNext()) {
@@ -167,9 +178,10 @@ public class Dataset implements Cloneable{
 			}
 		}
 		System.out.println("bestAttr: " + bestAttr);	// TODO
-		double gainAve = 2.0 * gainSum / attrlist.size();
-		// 枝刈り
-		if (gain(bestAttr) < gainAve) {	//条件:全属性の情報利得の平均以上であること
+		double gainAve = gainSum / attrlist.size();
+		double gainThreshold = 1.8;
+		// x2.枝刈り．最高利得率と平均利得率の比がgainRate未満か
+		if (gain(bestAttr) < gainThreshold * gainAve) {
 			bestAttr = null;
 			System.out.println("However, under gain average " + gainAve);
 		}
@@ -268,7 +280,7 @@ public class Dataset implements Cloneable{
 		return null;
 	}
 	private void removeValueInAttr(AbstractAttribute<?> removeAttr) {
-		attrlist.removeAttr(removeAttr);
+		attrlist.remove(removeAttr);
 		for (Record r : records)
 			r.removeValueInAttr(removeAttr);
 	}

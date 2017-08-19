@@ -3,8 +3,8 @@ package tree.edge;
 import tree.node.Node;
 
 public class Edge {
-	protected Node fromNode;
-	protected Node toNode;
+	protected Node fromNode;	// このエッジの接続元のノード
+	protected Node toNode;		// このエッジの接続先のノード
 
 	public Edge(Node from, Node to) {
 		this.fromNode = from;

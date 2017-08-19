@@ -3,7 +3,7 @@ package tree;
 import tree.node.Node;
 
 public class DecisionTree {
-	private Node root;
+	private Node root;	// ルートノード
 
 	public DecisionTree(Node root) {
 		this.root = root;

@@ -45,6 +45,10 @@ public class Tuple implements Cloneable{
 		return "Tuple [vector=" + vector.stream().map(val -> val.toString()).collect(Collectors.joining(",")) + "]";
 	}
 
+	public String toOriginalString() {
+		return vector.stream().map(v -> v.toOriginalString()).collect(Collectors.joining(","));
+	}
+
 	/**
 	 * 指定の属性に対応する値を返す。
 	 * @param attr
@@ -67,4 +71,5 @@ public class Tuple implements Cloneable{
 				return vector.remove(val);
 		return false;
 	}
+
 }

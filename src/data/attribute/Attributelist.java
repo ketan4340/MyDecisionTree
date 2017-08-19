@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import data.value.AbstractValue;
-
 public class Attributelist implements Cloneable{
 	private List<AbstractAttribute<?>> attrs;
 
@@ -52,8 +50,7 @@ public class Attributelist implements Cloneable{
 	public ListIterator<AbstractAttribute<?>> listIterator() {
 		return attrs.listIterator();
 	}
-
-	public boolean removeAttr(AbstractAttribute<?> removeAttr) {
+	public boolean remove(AbstractAttribute<?> removeAttr) {
 		return attrs.remove(removeAttr);
 	}
 

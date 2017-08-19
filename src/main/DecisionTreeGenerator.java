@@ -14,10 +14,10 @@ import tree.node.InternalNode;
 import tree.node.LeafNode;
 import tree.node.Node;
 
-public class Classifier {
-	public static double sizeThreshold = 0.01;
+public class DecisionTreeGenerator {
+	public static double sizeThreshold = 0.1;
 
-	public Classifier() {
+	public DecisionTreeGenerator() {
 	}
 
 	public DecisionTree run(Path datasetPath, Path attrlistPath) {
@@ -27,9 +27,6 @@ public class Classifier {
 	}
 	public DecisionTree run(Dataset trainData) {
 		double baseSize = trainData.size();
-
-		trainData.collectClass("good");
-		trainData.collectClass("vgood");
 
 		return new DecisionTree(generateDecisionTree(trainData, baseSize));
 	}
@@ -54,7 +51,7 @@ public class Classifier {
 		if (attrlist.isEmpty())
 			return new LeafNode(trainData.getMajorityClassValue());
 
-		// x.事前枝刈り。現データセットのサイズが元のデータセットの(1/閾値)の場合，最多属性値をラベルづけして終了
+		// x1.枝刈り。現データセットのサイズが元のデータセットの閾値s倍未満の場合，最多属性値をラベルづけして終了
 		if (trainData.size() < sizeThreshold * baseSize)
 			return new LeafNode(trainData.getMajorityClassValue());
 
