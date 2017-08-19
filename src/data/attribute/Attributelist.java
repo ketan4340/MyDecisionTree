@@ -32,7 +32,6 @@ public class Attributelist implements Cloneable{
 					.map(attr -> attr.replaceAll("[ \t]", ""))	// ラベルのスペースやタブを削除
 					.map(label -> new NominalAttribute(label))	// 離散属性としてインスタンス生成(連続値はあとで変える)
 					.collect(Collectors.toList());				// リスト化
-			//this.attrs.add(new NominalAttribute("class"));		// 最後尾にクラス属性の分を追加
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

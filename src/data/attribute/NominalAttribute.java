@@ -48,6 +48,4 @@ public class NominalAttribute extends AbstractAttribute<NominalValue> {
 		return "NmAt:" + label;
 	}
 
-
-
 }

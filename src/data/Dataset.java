@@ -153,7 +153,6 @@ public class Dataset implements Cloneable{
 	 * @return 情報利得率が最高の属性。情報利得が閾値未満の場合はnull。
 	 */
 	public AbstractAttribute<?> getBestAttrByGainRation() {
-		//System.out.println("Info\t= " + info());//TODO
 		double gainSum = 0;			// 情報利得の平均を取るために使う
 		double maxGainRatio = 0;
 		AbstractAttribute<?> bestAttr = null;
@@ -168,7 +167,8 @@ public class Dataset implements Cloneable{
 			}
 		}
 		System.out.println("bestAttr: " + bestAttr);	// TODO
-		double gainAve = gainSum / attrlist.size();
+		double gainAve = 2.0 * gainSum / attrlist.size();
+		// 枝刈り
 		if (gain(bestAttr) < gainAve) {	//条件:全属性の情報利得の平均以上であること
 			bestAttr = null;
 			System.out.println("However, under gain average " + gainAve);
@@ -186,7 +186,6 @@ public class Dataset implements Cloneable{
 			double prob = freq/thisSize;
 			info -= prob * Math.log(prob)/Math.log(2);
 		}
-		//System.out.println("\tinfo\t= " + info);//TODO
 		return info;
 	}
 	/** 属性attrで分割した後の情報量 */
@@ -199,14 +198,11 @@ public class Dataset implements Cloneable{
 			double subSize = subDS.size();
 			infoAttr += subSize / thisSize * subDS.info();
 		}
-		//System.out.println("\tinfoA\t= " + infoAttr);//TODO
 		return infoAttr;
 	}
 	/** 属性attrによる情報利得 */
 	private double gain(AbstractAttribute<?> attr) {
-		double infoGain = info() - infoByAttr(attr);
-		//System.out.print(" InfoGain\t= " + infoGain);//TODO
-		return infoGain;
+		return info() - infoByAttr(attr);
 	}
 	/** 属性attrによる全情報量 */
 	private double splitInfoByAttr(AbstractAttribute<?> attr) {
