@@ -15,6 +15,8 @@ import tree.node.LeafNode;
 import tree.node.Node;
 
 public class Classifier {
+	public static double threshold = 20.0;
+
 	public Classifier() {
 	}
 
@@ -24,10 +26,14 @@ public class Classifier {
 		return run(trainData);
 	}
 	public DecisionTree run(Dataset trainData) {
-		return new DecisionTree(generateDecisionTree(trainData));
+		double sizeThreshold = trainData.size() / threshold;
+
+		trainData.collectClass("good");
+		trainData.collectClass("vgood");
+		return new DecisionTree(generateDecisionTree(trainData, sizeThreshold));
 	}
 
-	private Node generateDecisionTree(Dataset trainData) {
+	private Node generateDecisionTree(Dataset trainData, double sizeThreshold) {
 		Attributelist attrlist = trainData.getAttrlist();
 		// 0.全TupleとAttributeListの次元の一致を確認
 		if (!isReady(trainData)) {
@@ -47,6 +53,10 @@ public class Classifier {
 		if (attrlist.isEmpty())
 			return new LeafNode(trainData.getMajorityClassValue());
 
+		// x.事前枝刈り。閾値未満の場合nullが返ってくるので最多属性値をラベルづけして終了
+		if (trainData.size() < sizeThreshold)
+			return new LeafNode(trainData.getMajorityClassValue());
+
 		// 4.利得率から判定する属性を選び，分岐させる
 		AbstractAttribute<?> bestAttr = trainData.getBestAttrByGainRation();
 		node = new InternalNode(bestAttr);
@@ -62,7 +72,7 @@ public class Classifier {
 				node.addChildNode(branch, freqChild);
 			} else {
 				// 再帰的にノードを生成し繋げていく
-				Node recurChild = generateDecisionTree(subDS);
+				Node recurChild = generateDecisionTree(subDS, sizeThreshold);
 				node.addChildNode(branch, recurChild);
 			}
 		}

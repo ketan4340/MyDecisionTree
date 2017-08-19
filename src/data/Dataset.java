@@ -77,6 +77,12 @@ public class Dataset implements Cloneable{
 	    return null;
 	}
 
+	public void collectClass(String val) {
+		for (Record r : records)
+			if(r.getClassValue().getElem().equals(val))
+				System.out.println(r);
+	}
+
 	/**
 	 * 各属性をみて値が連続値なら数値属性(ContinuousAttribute)に置き換える
 	 * @return
@@ -143,22 +149,31 @@ public class Dataset implements Cloneable{
 
 	/**
 	 * 情報利得率で分割属性を決める。
-	 * @return 情報利得率が最高の属性
+	 * @param 情報利得の閾値
+	 * @return 情報利得率が最高の属性。情報利得が閾値未満の場合はnull。
 	 */
 	public AbstractAttribute<?> getBestAttrByGainRation() {
 		//System.out.println("Info\t= " + info());//TODO
+		double gainSum = 0;			// 情報利得の平均を取るために使う
 		double maxGainRatio = 0;
 		AbstractAttribute<?> bestAttr = null;
 		for (AbstractAttribute<?> attr : attrlist.getList()) {
-			//System.out.println(attr + "'s\tGainRatio ");	//TODO
+			gainSum += gain(attr);
+			System.out.print("\t"+attr+":\t");
 			double gainRatio = gainRatio(attr);
-			//System.out.println("\t\tGainRatio = " + gainRatio);
+			System.out.println("\tGainRatio= " + gainRatio);
 			if (gainRatio > maxGainRatio) {
 				maxGainRatio = gainRatio;
 				bestAttr = attr;
 			}
 		}
-		System.out.println("bestAttr:\t" + bestAttr);	// TODO
+		System.out.println("bestAttr: " + bestAttr);	// TODO
+		double gainAve = gainSum / attrlist.size();
+		if (gain(bestAttr) < gainAve) {	//条件:全属性の情報利得の平均以上であること
+			bestAttr = null;
+			System.out.println("However, under gain average " + gainAve);
+		}
+
 		return bestAttr;
 	}
 	/** 情報量(エントロピー) */
@@ -189,7 +204,9 @@ public class Dataset implements Cloneable{
 	}
 	/** 属性attrによる情報利得 */
 	private double gain(AbstractAttribute<?> attr) {
-		return info() - infoByAttr(attr);
+		double infoGain = info() - infoByAttr(attr);
+		//System.out.print(" InfoGain\t= " + infoGain);//TODO
+		return infoGain;
 	}
 	/** 属性attrによる全情報量 */
 	private double splitInfoByAttr(AbstractAttribute<?> attr) {
@@ -201,15 +218,15 @@ public class Dataset implements Cloneable{
 			double sizeRate = subSize / thisSize;
 			splitInfo -= sizeRate * Math.log(sizeRate)/Math.log(2);
 		}
-		//System.out.println("\tsplitInfo\t= " + splitInfo);//TODO
 		return splitInfo;
 	}
 	/** 情報利得率 */
 	private double gainRatio(AbstractAttribute<?> attr) {
-		double gain = gain(attr);
-		//System.out.println("\tInfoGain\t= " + gain);
-		return gain / splitInfoByAttr(attr);
+		double infoGain = gain(attr);
+		System.out.print(" InfoGain= " + infoGain);//TODO
+		return infoGain / splitInfoByAttr(attr);
 	}
+
 
 	/**
 	 * 指定された属性の値ごとにデータセットを分割する。

@@ -37,10 +37,10 @@ public class InternalNode extends Node{
 	/** toString */
 	@Override
 	public String toString() {
-		return "[" + judgeAttr + "]\n" +
+		return "[" + judgeAttr + "](" +
 	childEdges.stream()
-	.map(e -> "\t"+e.toString()+e.getToNode())
-	.collect(Collectors.joining(","));
+	.map(e -> e.toString()+e.getToNode())
+	.collect(Collectors.joining(",")) + ")";
 	}
 	/**
 	 * このInternalNodeをLeafNodeに置き換える。置き換えるLeafNodeはこのInternalNodeに接続されているEdgeを引き継ぐ。

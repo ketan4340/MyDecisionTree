@@ -39,7 +39,7 @@ public class LeafNode extends Node {
 	public String toString() {
 		return "(" + classValue + ")\n" +
 				childEdges.stream()
-				.map(e -> "\t"+e.toString()+e.getToNode())
+				.map(e -> e.toString()+e.getToNode())
 				.collect(Collectors.joining(","));
 	}
 
