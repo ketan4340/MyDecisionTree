@@ -44,6 +44,9 @@ public class Attributelist implements Cloneable{
 	public int size() {
 		return attrs.size();
 	}
+	public int indexOf(AbstractAttribute<?> attr) {
+		return attrs.indexOf(attr);
+	}
 	public boolean isEmpty() {
 		return attrs.isEmpty();
 	}

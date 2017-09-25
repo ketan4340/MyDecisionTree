@@ -50,7 +50,7 @@ public class Dataset implements Cloneable{
 	}
 
 	/* getter */
-	public Set<Record> getSet() {
+	public Set<Record> getRecordSet() {
 		return records;
 	}
 	public Attributelist getAttrlist() {
@@ -163,7 +163,7 @@ public class Dataset implements Cloneable{
 	 * @param 情報利得の閾値
 	 * @return 情報利得率が最高の属性。情報利得が閾値未満の場合はnull。
 	 */
-	public AbstractAttribute<?> getBestAttrByGainRation() {
+	public AbstractAttribute<?> bestAttrByGainRation(double gainRateThreshold) {
 		double gainSum = 0;			// 情報利得の平均を取るために使う
 		double maxGainRatio = 0;
 		AbstractAttribute<?> bestAttr = null;
@@ -178,10 +178,12 @@ public class Dataset implements Cloneable{
 			}
 		}
 		System.out.println("bestAttr: " + bestAttr);	// TODO
+		if(bestAttr == null)
+			return bestAttr;
+
 		double gainAve = gainSum / attrlist.size();
-		double gainThreshold = 1.8;
 		// x2.枝刈り．最高利得率と平均利得率の比がgainRate未満か
-		if (gain(bestAttr) < gainThreshold * gainAve) {
+		if (gain(bestAttr) < gainRateThreshold * gainAve) {
 			bestAttr = null;
 			System.out.println("However, under gain average " + gainAve);
 		}
@@ -258,10 +260,13 @@ public class Dataset implements Cloneable{
 	}
 	/** 離散値属性を基準に分割 */
 	private Map<NominalValue, Dataset> splitByNominalAttr(NominalAttribute splitNA) {
-		Map<NominalValue, Dataset> subsetsMap = new HashMap<>(splitNA.getAllValues().size());
+		// データセット中の指定属性の値を全種類集める
+		Set<AbstractValue<?>> valueKind = collectValue(splitNA);
+		Map<NominalValue, Dataset> subsetsMap = new HashMap<>(valueKind.size());
 		// 該当属性の値の分だけ空のサブデータセットを用意
-		for (NominalValue nomVal : splitNA.getAllValues())
-			subsetsMap.put(nomVal, new Dataset(attrlist.clone()));
+		for (AbstractValue<?> nomVal : valueKind)
+			subsetsMap.put((NominalValue) nomVal, new Dataset(attrlist.clone()));
+
 		// 各レコードをチェックしてサブデータセットに振り分ける
 		for (Record rcd : records) {
 			// key
@@ -279,9 +284,37 @@ public class Dataset implements Cloneable{
 		// TODO
 		return null;
 	}
+
+	private Set<AbstractValue<?>> collectValue(AbstractAttribute<?> attr) {
+		Set<AbstractValue<?>> valueKind = new HashSet<>();
+		for (Record r : records)
+			valueKind.add(r.getTuple().getValueInAttr(attr));
+		return valueKind;
+	}
 	private void removeValueInAttr(AbstractAttribute<?> removeAttr) {
 		attrlist.remove(removeAttr);
 		for (Record r : records)
 			r.removeValueInAttr(removeAttr);
+	}
+
+	/**
+	 * 指定された数だけランダムにレコードを抜き出してテストデータを作る
+	 * @param recordNum データセット全体から何個のレコードを抜き出すか
+	 * @return 抜き出されたレコードで構成されたデータセット
+	 */
+	public Dataset pickOutTestData(int recordNum) {
+		int originSize = size();
+		if (recordNum > originSize)
+			return null;
+		Set<Record> subRecords = new HashSet<>(recordNum);
+		List<Record> copiedList = new ArrayList<>(this.getRecordSet());
+
+        for (int i = 0; i < recordNum; i++) {
+            int j = (int) Math.random() * --originSize;
+            Record selectedRecord = copiedList.remove(j);
+            this.records.remove(selectedRecord);
+            subRecords.add(selectedRecord);
+        }
+        return new Dataset(subRecords, attrlist);
 	}
 }

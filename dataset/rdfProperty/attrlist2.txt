@@ -1,0 +1,1 @@
+pred_PoS, DE+1, DE+2, NI+1, NI+2, WO+1, WO+2, GA+1, GA+2

@@ -15,23 +15,20 @@ import tree.node.LeafNode;
 import tree.node.Node;
 
 public class DecisionTreeGenerator {
-	public static double sizeThreshold = 0.1;
+	public double sizeThreshold;
+	public double gainRateThreshold;
 
-	public DecisionTreeGenerator() {
+	public DecisionTreeGenerator(double sizeThreshold, double gainRateThreshold) {
+		this.sizeThreshold = sizeThreshold;
+		this.gainRateThreshold = gainRateThreshold;
 	}
 
-	public DecisionTree run(Path datasetPath, Path attrlistPath) {
-		Attributelist attrlist = new Attributelist(attrlistPath);
-		Dataset trainData = new Dataset(datasetPath, attrlist);
-		return run(trainData);
-	}
-	public DecisionTree run(Dataset trainData) {
+	public DecisionTree generateTree(Dataset trainData) {
 		double baseSize = trainData.size();
-
-		return new DecisionTree(generateDecisionTree(trainData, baseSize));
+		return new DecisionTree(generateNode(trainData, baseSize));
 	}
 
-	private Node generateDecisionTree(Dataset trainData, double baseSize) {
+	private Node generateNode(Dataset trainData, double baseSize) {
 		Attributelist attrlist = trainData.getAttrlist();
 		// 0.全TupleとAttributeListの次元の一致を確認
 		if (!isReady(trainData)) {
@@ -47,7 +44,7 @@ public class DecisionTreeGenerator {
 		if (commonClassValue != null)
 			return new LeafNode(commonClassValue);
 
-		// 3.Attributelistが空ならノードに全Tuple中最も多い属性値をラベルづけして終了
+		// 3.Attributelistが空ならノードに全Tuple中最も多いクラス値をラベルづけして終了
 		if (attrlist.isEmpty())
 			return new LeafNode(trainData.getMajorityClassValue());
 
@@ -56,7 +53,7 @@ public class DecisionTreeGenerator {
 			return new LeafNode(trainData.getMajorityClassValue());
 
 		// 4.利得率から判定する属性を選び，分岐させる
-		AbstractAttribute<?> bestAttr = trainData.getBestAttrByGainRation();
+		AbstractAttribute<?> bestAttr = trainData.bestAttrByGainRation(gainRateThreshold);
 		if (bestAttr == null)
 			return new LeafNode(trainData.getMajorityClassValue());
 		node = new InternalNode(bestAttr);
@@ -72,21 +69,26 @@ public class DecisionTreeGenerator {
 				node.addChildNode(branch, freqChild);
 			} else {
 				// 再帰的にノードを生成し繋げていく
-				Node recurChild = generateDecisionTree(subDS, baseSize);
+				Node recurChild = generateNode(subDS, baseSize);
 				node.addChildNode(branch, recurChild);
 			}
 		}
 		return node;
 	}
 
+	/**
+	 * データセットと属性リストの長さの一致を確かめる。
+	 * @param trainData
+	 * @return
+	 */
 	private boolean isReady(Dataset trainData) {
 		int dimension = trainData.getAttrlist().size();
-		boolean b = true;
-		for (Record r : trainData.getSet())
-			if (r.size() != dimension+1){	// 次元の不一致
+		for (Record r : trainData.getRecordSet()) {
+			if (r.size() != dimension+1) {	// 次元の不一致
 				System.err.println("ErrorRecord: " + r);
-				b = false;
+				return false;
 			}
-		return b;
+		}
+		return true;
 	}
 }
