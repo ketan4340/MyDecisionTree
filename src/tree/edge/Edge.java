@@ -4,13 +4,14 @@ import tree.node.Node;
 
 public class Edge<L> {
 	protected Node<?> fromNode;	// このエッジの接続元のノード
-	protected Node<?> toNode;		// このエッジの接続先のノード
-	protected L label;
+	protected Node<?> toNode;	// このエッジの接続先のノード
+	protected L label;			// このエッジの任意のクラスのラベル
 
-	public Edge(Node<?> from, Node<?> to, L lb) {
-		this.fromNode = from;
-		this.toNode = to;
-		this.label = lb;
+	/* Constructor */
+	public Edge(Node<?> from, Node<?> to, L label) {
+		this.setFromNode(from);
+		this.setToNode(to);
+		this.setLabel(label);
 	}
 	public Edge(Node<?> from, Node<?> to) {
 		this(from, to, null);
@@ -19,17 +20,24 @@ public class Edge<L> {
 		this(null, null, null);
 	}
 
-	/** getter/setter */
+	/* Getter */
 	public Node<?> getFromNode() {
 		return fromNode;
 	}
 	public Node<?> getToNode() {
 		return toNode;
 	}
+	public L getLabel() {
+		return label;
+	}
+	/* Setter */
 	public void setFromNode(Node<?> fromNode) {
 		this.fromNode = fromNode;
 	}
 	public void setToNode(Node<?> toNode) {
 		this.toNode = toNode;
+	}
+	public void setLabel(L label) {
+		this.label = label;
 	}
 }

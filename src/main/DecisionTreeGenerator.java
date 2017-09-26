@@ -1,6 +1,5 @@
 package main;
 
-import java.nio.file.Path;
 import java.util.Map;
 
 import data.Dataset;
@@ -28,7 +27,7 @@ public class DecisionTreeGenerator {
 		return new DecisionTree(generateNode(trainData, baseSize));
 	}
 
-	private Node generateNode(Dataset trainData, double baseSize) {
+	private Node<?> generateNode(Dataset trainData, double baseSize) {
 		Attributelist attrlist = trainData.getAttrlist();
 		// 0.全TupleとAttributeListの次元の一致を確認
 		if (!isReady(trainData)) {
@@ -37,7 +36,7 @@ public class DecisionTreeGenerator {
 		}
 
 		// 1.ルートNode作成
-		Node node;
+		Node<?> node;
 
 		// 2.全てのTupleのクラス属性値が同じCならルートにCをラベル付けして終了
 		AbstractValue<?> commonClassValue = trainData.getCommonClassValue();
@@ -69,7 +68,7 @@ public class DecisionTreeGenerator {
 				node.addChildNode(branch, freqChild);
 			} else {
 				// 再帰的にノードを生成し繋げていく
-				Node recurChild = generateNode(subDS, baseSize);
+				Node<?> recurChild = generateNode(subDS, baseSize);
 				node.addChildNode(branch, recurChild);
 			}
 		}

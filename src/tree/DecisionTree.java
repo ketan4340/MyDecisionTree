@@ -32,11 +32,23 @@ public class DecisionTree {
 		return "DecisionTree [" + root + "]";
 	}
 	
-	public boolean applyRecord(Record record, Attributelist attrlist) {
+	/**
+	 * 渡されたレコードをこの決定木に適用したときクラス値が一致するか確認する．
+	 * @param record レコード
+	 * @param attrlist レコードに対応した属性リスト
+	 * @return 分類結果のクラス値と実際のレコードのクラス値が一致すればtrueを返す．
+	 */
+	public boolean classifiedCorrectly(Record record, Attributelist attrlist) {
 		NominalValue decisionClassValue = applyTuple(record.getTuple(), attrlist);
 		NominalValue actualClassValue = record.getClassValue();
-		return false;
+		return decisionClassValue.equals(actualClassValue);
 	}
+	/**
+	 * この決定木にタプルを適用した分類結果を得る．
+	 * @param tuple タプル
+	 * @param attrlist タプルに対応した属性リスト
+	 * @return この決定木でタプルが分類されたクラス値．
+	 */
 	private NominalValue applyTuple(Tuple tuple, Attributelist attrlist) {
 		for (Node<?> node = root; !node.isLeaf(); ) {
 			InternalNode inNode = (InternalNode) node;
