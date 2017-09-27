@@ -12,7 +12,7 @@ import tree.edge.Branch;
 import tree.edge.Edge;
 
 /**
- * 内部ノード。現状ルートノードのみの場合にも使えるが、やめたほうがきれいかも。
+ * 内部ノード．必ず子ノードをもつ．決定木がルートノードのみの場合はLeafNodeを使う．
  * @author tanabekentaro
  */
 public class InternalNode extends Node<AbstractAttribute<?>>{

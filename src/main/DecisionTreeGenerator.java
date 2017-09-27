@@ -68,8 +68,8 @@ public class DecisionTreeGenerator {
 				node.addChildNode(branch, freqChild);
 			} else {
 				// 再帰的にノードを生成し繋げていく
-				Node<?> recurChild = generateNode(subDS, baseSize);
-				node.addChildNode(branch, recurChild);
+				Node<?> recursionChild = generateNode(subDS, baseSize);
+				node.addChildNode(branch, recursionChild);
 			}
 		}
 		return node;

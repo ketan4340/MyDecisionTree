@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 import data.value.AbstractValue;
 import tree.edge.Branch;
 
+/**
+ * 葉ノード．子ノードは持たない．
+ * @author tanabekentaro
+ */
 public class LeafNode extends Node<AbstractValue<?>> {
 
 	/* コンストラクタ */

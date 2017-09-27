@@ -50,12 +50,12 @@ public class DecisionTree {
 	 * @return この決定木でタプルが分類されたクラス値．
 	 */
 	private NominalValue applyTuple(Tuple tuple, Attributelist attrlist) {
+		Node<?> node = root;
 		while (!node.isLeaf()) {
-			Node<?> node = root;
-			InternalNode inNode = (InternalNode) node;
-					
-			Node<?> nextNode = inNode.getChildMatchTuple(tuple, attrlist);
+			InternalNode internalNode = (InternalNode) node;
+			node = internalNode.getChildMatchTuple(tuple, attrlist);
 		}
+		
 	}
 	
 }
