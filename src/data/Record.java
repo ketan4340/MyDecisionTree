@@ -12,6 +12,10 @@ import data.attribute.NominalAttribute;
 import data.value.AbstractValue;
 import data.value.NominalValue;
 
+/**
+ * レコード．タプルとクラス属性値をもつ．
+ * @author tanabekentaro
+ */
 public class Record implements Cloneable{
 	private Tuple tuple;
 	private NominalValue classValue;

@@ -6,8 +6,13 @@ import data.attribute.Attributelist;
 import data.value.NominalValue;
 import tree.edge.Branch;
 import tree.node.InternalNode;
+import tree.node.LeafNode;
 import tree.node.Node;
 
+/**
+ * 決定木．決定木の根ノードをもつ．
+ * @author tanabekentaro
+ */
 public class DecisionTree {
 	private Node<?> root;	// ルートノード
 
@@ -38,8 +43,8 @@ public class DecisionTree {
 	 * @param attrlist レコードに対応した属性リスト
 	 * @return 分類結果のクラス値と実際のレコードのクラス値が一致すればtrueを返す．
 	 */
-	public boolean classifiedCorrectly(Record record, Attributelist attrlist) {
-		NominalValue decisionClassValue = applyTuple(record.getTuple(), attrlist);
+	public boolean classifiedCorrectly(Record record) {
+		NominalValue decisionClassValue = applyTuple(record.getTuple());
 		NominalValue actualClassValue = record.getClassValue();
 		return decisionClassValue.equals(actualClassValue);
 	}
@@ -49,13 +54,15 @@ public class DecisionTree {
 	 * @param attrlist タプルに対応した属性リスト
 	 * @return この決定木でタプルが分類されたクラス値．
 	 */
-	private NominalValue applyTuple(Tuple tuple, Attributelist attrlist) {
+	private NominalValue applyTuple(Tuple tuple) {
 		Node<?> node = root;
-		while (!node.isLeaf()) {
-			InternalNode internalNode = (InternalNode) node;
-			node = internalNode.getChildMatchTuple(tuple, attrlist);
+		while (node != null) {
+			if (node.isLeaf())	// 葉ノードまで辿り着いたら
+				return (NominalValue) ((LeafNode) node).getLabel();	// 葉ノードがもつクラス値を返す
+			else					// 内部ノードなら
+				node = ((InternalNode) node).getChildMatchTuple(tuple);	// タプルの値に合う子ノードへ進む				
 		}
-		
+		return null;
 	}
 	
 }

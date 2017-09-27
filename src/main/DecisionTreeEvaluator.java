@@ -21,7 +21,8 @@ public class DecisionTreeEvaluator {
 	
 	public void evaluate(Dataset testData) {
 		for (Record record : testData.getRecordSet()) {
-			boolean decisionResult = decisionTree.classifiedCorrectly(record, testData.getAttrlist());
+			boolean decisionResult = decisionTree.classifiedCorrectly(record);
+			
 		}
 	}
 	

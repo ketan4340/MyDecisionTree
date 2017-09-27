@@ -42,16 +42,26 @@ public class InternalNode extends Node<AbstractAttribute<?>>{
 		return false;
 	}
 	
-	public Node<?> getChildMatchTuple(Tuple tuple, Attributelist attrlist) {
-		int attrIndex = attrlist.indexOf(label);
-		AbstractValue<?> val = tuple.get(attrIndex);
-		Branch matchedBranch = getMatchedBranch(val);
-		
-		return null;
+	/**
+	 * 渡されたタプルがもつ属性値と同じ枝の先につながる子ノードを得る．
+	 * @param tuple 参照するタプル
+	 * @return タプルが進む先の子ノード
+	 */
+	public Node<?> getChildMatchTuple(Tuple tuple) {
+		AbstractValue<?> val = tuple.getValueInAttr(label);
+		Branch matchedBranch = getBranchHaveValue(val);
+		return matchedBranch.getToNode();
 	}
-	private Branch getMatchedBranch(AbstractValue<?> val) {
+	/**
+	 * 与えられた属性値をもつ枝を探す
+	 * @param val 属性値
+	 * @return 指定の属性値をもつ枝
+	 */
+	private Branch getBranchHaveValue(AbstractValue<?> val) {
 		for (Edge<?> edge : childEdges) {
 			Branch branch = (Branch) edge;
+			if (val.equals(branch.getLabel()))
+				return branch;
 		}
 		return null;
 	}

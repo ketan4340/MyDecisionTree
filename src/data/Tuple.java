@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import data.attribute.AbstractAttribute;
 import data.value.AbstractValue;
 
+/**
+ * タプル．属性値のベクトル(実装上はリスト)をもつ．
+ * @author tanabekentaro
+ */
 public class Tuple implements Cloneable{
 	private List<AbstractValue<?>> vector;
 
@@ -56,7 +60,7 @@ public class Tuple implements Cloneable{
 	 */
 	public AbstractValue<?> getValueInAttr(AbstractAttribute<?> attr) {
 		for (AbstractValue<?> val : vector)
-			if (val.getAttr().equals(attr))
+			if (attr.equals(val.getAttr()))
 				return val;
 		return null;
 	}
