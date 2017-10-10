@@ -2,7 +2,7 @@ package data.value;
 
 import data.attribute.ContinuousAttribute;
 
-public class ContinuousValue extends AbstractValue<Double> implements Comparable<ContinuousValue>{
+public class ContinuousValue extends AbstractValue<Double> {
 
 	/** コンストラクタ */
 	public ContinuousValue(double e, ContinuousAttribute ca) {
@@ -17,8 +17,4 @@ public class ContinuousValue extends AbstractValue<Double> implements Comparable
 		return "CV:" + elem;
 	}
 
-	@Override
-	public int compareTo(ContinuousValue cv) {
-		return Double.compare(super.elem, cv.elem);
-	}
 }

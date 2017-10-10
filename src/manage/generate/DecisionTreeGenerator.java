@@ -1,4 +1,4 @@
-package main;
+package manage.generate;
 
 import java.util.Map;
 
@@ -14,7 +14,13 @@ import tree.node.LeafNode;
 import tree.node.Node;
 
 public class DecisionTreeGenerator {
+	/**
+	 * 分割されたデータセットのサイズに基づく閾値
+	 */
 	public double sizeThreshold;
+	/**
+	 * 情報利得率に基づく閾値
+	 */
 	public double gainRateThreshold;
 
 	public DecisionTreeGenerator(double sizeThreshold, double gainRateThreshold) {

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,22 +77,6 @@ public class Dataset implements Cloneable{
             ce.printStackTrace();
 	    }
 	    return null;
-	}
-
-	public void collectClass(String val) {
-		List<String> list = new ArrayList<>();
-		for (Record r : records)
-			if(r.getClassValue().getElem().equals(val))
-				list.add(r.toOriginalString());
-
-
-		Path dst = Paths.get("dataset/carEvaluation/car.train.data");
-		try {
-			Path r = Files.write(dst, list, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
 	}
 
 	/** 各属性をみて値が連続値なら数値属性(ContinuousAttribute)に置き換える */
@@ -261,10 +243,10 @@ public class Dataset implements Cloneable{
 	/** 離散値属性を基準に分割 */
 	private Map<NominalValue, Dataset> splitByNominalAttr(NominalAttribute splitNA) {
 		// データセット中の指定属性の値を全種類集める
-		Set<AbstractValue<?>> valueKind = collectValue(splitNA);
-		Map<NominalValue, Dataset> subsetsMap = new HashMap<>(valueKind.size());
+		Set<AbstractValue<?>> allValues = valuesInAttr(splitNA);
+		Map<NominalValue, Dataset> subsetsMap = new HashMap<>(allValues.size());
 		// 該当属性の値の分だけ空のサブデータセットを用意
-		for (AbstractValue<?> nomVal : valueKind)
+		for (AbstractValue<?> nomVal : allValues)
 			subsetsMap.put((NominalValue) nomVal, new Dataset(attrlist.clone()));
 
 		// 各レコードをチェックしてサブデータセットに振り分ける
@@ -285,11 +267,17 @@ public class Dataset implements Cloneable{
 		return null;
 	}
 
-	private Set<AbstractValue<?>> collectValue(AbstractAttribute<?> attr) {
-		Set<AbstractValue<?>> valueKind = new HashSet<>();
+	private Set<AbstractValue<?>> valuesInAttr(AbstractAttribute<?> attr) {
+		Set<AbstractValue<?>> allValues = new HashSet<>();
 		for (Record r : records)
-			valueKind.add(r.getTuple().getValueInAttr(attr));
-		return valueKind;
+			allValues.add(r.getValueInAttr(attr));
+		return allValues;
+	}
+	public Set<NominalValue> classValues() {
+		Set<NominalValue> allValues = new HashSet<>();
+		for (Record r : records)
+			allValues.add(r.getClassValue());
+		return allValues;
 	}
 	private void removeValueInAttr(AbstractAttribute<?> removeAttr) {
 		attrlist.remove(removeAttr);
@@ -317,4 +305,5 @@ public class Dataset implements Cloneable{
         }
         return new Dataset(subRecords, attrlist);
 	}
+
 }

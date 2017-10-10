@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import data.attribute.AbstractAttribute;
 import data.attribute.Attributelist;
@@ -13,7 +12,7 @@ import data.value.AbstractValue;
 import data.value.NominalValue;
 
 /**
- * レコード．タプルとクラス属性値をもつ．
+ * レコード．タプルとクラス属性値をもつ．現在離散値属性にしか対応していない．
  * @author tanabekentaro
  */
 public class Record implements Cloneable{
@@ -30,7 +29,13 @@ public class Record implements Cloneable{
 		this.tuple = new Tuple(valueList.subList(0, valueList.size()-1));	// 最後尾以外が属性ベクトル
 		this.classValue = (NominalValue) valueList.get(valueList.size()-1);	// 最後尾がクラス属性値
 	}
-	/** カンマで値が区切られたString型の属性ベクトルをAbstractValueのリストにする。 */
+	
+	/**
+	 * カンマで値が区切られたString型の属性ベクトルをAbstractValueのリストにする．
+	 * @param values_st 文字列で表現された属性値ベクトル
+	 * @param attrlist 属性リスト
+	 * @return 属性値のリスト
+	 */
 	private List<AbstractValue<?>> string2ValueList(String values_st, Attributelist attrlist) {
 		List<String> valueList_st = Arrays.asList(values_st.split(","));
 		if (valueList_st.size() != attrlist.size() +1) return null;

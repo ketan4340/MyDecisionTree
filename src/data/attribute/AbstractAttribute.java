@@ -5,19 +5,19 @@ import java.util.Set;
 
 import data.value.AbstractValue;
 
-public abstract class AbstractAttribute<V extends AbstractValue<?>> {
+public abstract class AbstractAttribute<E extends Comparable<E>> {
 	protected String label;
-	protected Set<V> allValues;
+	protected Set<AbstractValue<E>> allValues;
 
-	protected AbstractAttribute(String l, Set<V> values) {
+	protected AbstractAttribute(String l, Set<AbstractValue<E>> values) {
 		this.label = l;
 		this.allValues = values;
 	}
 	protected AbstractAttribute(String l) {
-		this(l, new HashSet<V>());
+		this(l, new HashSet<AbstractValue<E>>());
 	}
 
-	public void addValue(V value) {
+	public void addValue(AbstractValue<E> value) {
 		allValues.add(value);
 	}
 
@@ -25,7 +25,7 @@ public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 	public String getLabel() {
 		return label;
 	}
-	public Set<V> getAllValues() {
+	public Set<AbstractValue<E>> getAllValues() {
 		return allValues;
 	}
 
@@ -47,7 +47,7 @@ public abstract class AbstractAttribute<V extends AbstractValue<?>> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractAttribute<V> other = (AbstractAttribute<V>) obj;
+		AbstractAttribute<?> other = (AbstractAttribute<?>) obj;
 		if (label == null) {
 			if (other.label != null)
 				return false;

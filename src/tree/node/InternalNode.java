@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import data.Tuple;
 import data.attribute.AbstractAttribute;
-import data.attribute.Attributelist;
 import data.value.AbstractValue;
 import tree.edge.Branch;
 import tree.edge.Edge;

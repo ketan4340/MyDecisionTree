@@ -2,32 +2,46 @@ package data.value;
 
 import data.attribute.AbstractAttribute;
 
-public abstract class AbstractValue<E> {
-	protected E elem;									// 値
-	protected AbstractAttribute<AbstractValue<E>> attr;	// 所属する属性
+/**
+ * 属性値．
+ * @author tanabekentaro
+ * @param <E> 属性値の型
+ */
+public abstract class AbstractValue<E extends Comparable<E>> implements Comparable<AbstractValue<E>>{
+	protected E elem;					// 値
+	protected AbstractAttribute<E> attr;	// 所属する属性
 
-	/** コンストラクタ */
-	protected <V extends AbstractValue<E>> AbstractValue(E e, AbstractAttribute<V> aa) {
-		this.elem = e;
-		this.attr = (AbstractAttribute<AbstractValue<E>>) aa;
+	/* コンストラクタ */
+	/**
+	 * 属性に所属する値．
+	 * @param elem 値
+	 * @param attribute 所属する属性
+	 */
+	protected AbstractValue(E elem, AbstractAttribute<E> attribute) {
+		this.elem = elem;
+		this.attr = attribute;
 		this.attr.addValue(this);
 	}
-	protected AbstractValue(E e) {
-		this.elem = e;
+	/**
+	 * 未所属の値．クラス値に使用．
+	 * @param elem 値
+	 */
+	protected AbstractValue(E elem) {
+		this.elem = elem;
 	}
 
-	/** getter */
+	/* getter */
 	public E getElem() {
 		return elem;
 	}
-	public AbstractAttribute<AbstractValue<E>> getAttr() {
+	public AbstractAttribute<E> getAttr() {
 		return attr;
 	}
-	/** setter */
+	/* setter */
 	public void setElem(E elem) {
 		this.elem = elem;
 	}
-	public void setAttr(AbstractAttribute<AbstractValue<E>> attr) {
+	public void setAttr(AbstractAttribute<E> attr) {
 		this.attr = attr;
 	}
 
@@ -47,7 +61,7 @@ public abstract class AbstractValue<E> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractValue other = (AbstractValue) obj;
+		AbstractValue<?> other = (AbstractValue<?>) obj;
 		if (attr == null) {
 			if (other.attr != null)
 				return false;
@@ -60,12 +74,16 @@ public abstract class AbstractValue<E> {
 			return false;
 		return true;
 	}
-
-	/** toString */
 	@Override
 	public String toString() {
 		return "V:" + elem;
 	}
+	
+	@Override
+	public int compareTo(AbstractValue<E> v) {
+		return elem.compareTo(v.elem);
+	}
+	
 	public String toOriginalString() {
 		return elem.toString();
 	}

@@ -2,9 +2,7 @@ package tree;
 
 import data.Record;
 import data.Tuple;
-import data.attribute.Attributelist;
 import data.value.NominalValue;
-import tree.edge.Branch;
 import tree.node.InternalNode;
 import tree.node.LeafNode;
 import tree.node.Node;
@@ -14,7 +12,10 @@ import tree.node.Node;
  * @author tanabekentaro
  */
 public class DecisionTree {
-	private Node<?> root;	// ルートノード
+	/**
+	 * ルートノード
+	 */
+	private Node<?> root;
 
 	/* コンストラクタ */
 	public DecisionTree(Node<?> root) {
@@ -38,15 +39,12 @@ public class DecisionTree {
 	}
 	
 	/**
-	 * 渡されたレコードをこの決定木に適用したときクラス値が一致するか確認する．
+	 * 渡されたレコードをこの決定木に適用して，予測されるクラス値を返す．
 	 * @param record レコード
-	 * @param attrlist レコードに対応した属性リスト
-	 * @return 分類結果のクラス値と実際のレコードのクラス値が一致すればtrueを返す．
+	 * @return 分類結果のクラス値．
 	 */
-	public boolean classifiedCorrectly(Record record) {
-		NominalValue decisionClassValue = applyTuple(record.getTuple());
-		NominalValue actualClassValue = record.getClassValue();
-		return decisionClassValue.equals(actualClassValue);
+	public NominalValue predictClassOfRecord(Record record) {
+		return applyTuple(record.getTuple());
 	}
 	/**
 	 * この決定木にタプルを適用した分類結果を得る．
@@ -64,5 +62,6 @@ public class DecisionTree {
 		}
 		return null;
 	}
+
 	
 }

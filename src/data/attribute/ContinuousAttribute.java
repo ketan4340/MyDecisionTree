@@ -1,15 +1,16 @@
 package data.attribute;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import data.value.ContinuousValue;
 
 /** 数値属性(連続値) */
-public class ContinuousAttribute extends AbstractAttribute<ContinuousValue> {
+public class ContinuousAttribute extends AbstractAttribute<Double> {
 	/** コンストラクタ */
 	public ContinuousAttribute(String label, Set<ContinuousValue> values) {
-		super(label, values);
+		super(label, new HashSet<>(values));
 	}
 	public ContinuousAttribute(String label) {
 		super(label);
@@ -20,9 +21,9 @@ public class ContinuousAttribute extends AbstractAttribute<ContinuousValue> {
 		return "CnAt:" + label;
 	}
 	public ContinuousValue getMin() {
-		return Collections.min(allValues);
+		return (ContinuousValue) Collections.min(allValues);
 	}
 	public ContinuousValue getMax() {
-		return Collections.max(allValues);
+		return (ContinuousValue) Collections.max(allValues);
 	}
 }

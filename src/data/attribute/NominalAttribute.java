@@ -1,17 +1,19 @@
 package data.attribute;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import data.value.AbstractValue;
 import data.value.ContinuousValue;
 import data.value.NominalValue;
 
 /** 名義属性(離散値) */
-public class NominalAttribute extends AbstractAttribute<NominalValue> {
+public class NominalAttribute extends AbstractAttribute<String> {
 
 	public NominalAttribute(String label, Set<NominalValue> values) {
-		super(label, values);
+		super(label, new HashSet<>(values));
 	}
 	public NominalAttribute(String label) {
 		super(label);
@@ -36,8 +38,8 @@ public class NominalAttribute extends AbstractAttribute<NominalValue> {
 	 */
 	public boolean hasOnlyNumber() {
 		Pattern pattern = Pattern.compile("[+\\-]?([1-9]\\d*|0)(\\.\\d+)?");
-		for (NominalValue nv : allValues) {
-			String val_st = nv.getElem();
+		for (AbstractValue<String> abstractValue : allValues) {
+			String val_st = abstractValue.getElem();
 			Matcher matcher = pattern.matcher(val_st);
 			if(!matcher.matches()) return false;
 		}
