@@ -18,8 +18,9 @@ public class ContinuousAttribute extends AbstractAttribute<Double> {
 
 	@Override
 	public String toString() {
-		return "CnAt:" + label;
+		return "CA:" + label;
 	}
+	
 	public ContinuousValue getMin() {
 		return (ContinuousValue) Collections.min(allValues);
 	}

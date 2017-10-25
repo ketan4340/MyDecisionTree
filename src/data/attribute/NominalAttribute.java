@@ -47,7 +47,7 @@ public class NominalAttribute extends AbstractAttribute<String> {
 	}
 	@Override
 	public String toString() {
-		return "NmAt:" + label;
+		return "NA:" + label;
 	}
 
 }

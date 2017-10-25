@@ -31,9 +31,9 @@ public class InternalNode extends Node<AbstractAttribute<?>>{
 	@Override
 	public String toString() {
 		return "[" + label + "](" +
-	childEdges.stream()
-	.map(e -> e.toString()+e.getToNode())
-	.collect(Collectors.joining(",")) + ")";
+				childEdges.stream()
+				.map(e -> e.toString()+e.getToNode())
+				.collect(Collectors.joining(",")) + ")";
 	}
 	
 	@Override

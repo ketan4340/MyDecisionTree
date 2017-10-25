@@ -1,8 +1,15 @@
 package tree;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import data.Record;
 import data.Tuple;
 import data.value.NominalValue;
+import tree.edge.Branch;
 import tree.node.InternalNode;
 import tree.node.LeafNode;
 import tree.node.Node;
@@ -26,16 +33,41 @@ public class DecisionTree {
 	}
 
 	
-	/* getter/setter */
+	/* Getter */
 	public Node<?> getRoot() {
 		return root;
 	}
+	/* Setter */
 	public void setRoot(Node<?> rootNode) {
 		this.root = rootNode;
 	}
 	@Override
 	public String toString() {
 		return "DecisionTree [" + root + "]";
+	}
+	
+	public DecisionTreeComponents components() {
+		Set<InternalNode> internalNodes = new HashSet<>();
+		Set<LeafNode> leafNodes = new HashSet<>();
+		Set<Branch> branches = new HashSet<>();
+		
+		List<Node<?>> uncheckedNodes = new LinkedList<>();
+		uncheckedNodes.add(root);
+		
+		while (!uncheckedNodes.isEmpty()) {
+			Node<?> node = uncheckedNodes.remove(0);
+		
+			if (node.isLeaf()) {		// 葉ノードまで辿り着いたら
+				leafNodes.add((LeafNode) node);
+			}else {					// 内部ノードなら
+				internalNodes.add((InternalNode) node);
+				branches.addAll(node.getChildEdges().stream().map(e -> (Branch) e).collect(Collectors.toList()));
+
+				uncheckedNodes.addAll(node.getChildrenNodes());	
+			}
+		}
+		
+		return new DecisionTreeComponents(internalNodes, leafNodes, branches);
 	}
 	
 	/**

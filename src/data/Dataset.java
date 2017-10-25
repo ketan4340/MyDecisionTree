@@ -151,9 +151,9 @@ public class Dataset implements Cloneable{
 		AbstractAttribute<?> bestAttr = null;
 		for (AbstractAttribute<?> attr : attrlist.getList()) {
 			gainSum += gain(attr);
-			System.out.print("\t"+attr+":\t");
+			//System.out.print("\t"+attr+":\t");
 			double gainRatio = gainRatio(attr);
-			System.out.println("\tGainRatio= " + gainRatio);
+			//System.out.println("\tGainRatio= " + gainRatio);
 			if (gainRatio > maxGainRatio) {
 				maxGainRatio = gainRatio;
 				bestAttr = attr;
@@ -167,7 +167,7 @@ public class Dataset implements Cloneable{
 		// x2.枝刈り．最高利得率と平均利得率の比がgainRate未満か
 		if (gain(bestAttr) < gainRateThreshold * gainAve) {
 			bestAttr = null;
-			System.out.println("However, under gain average " + gainAve);
+			//System.out.println("However, under gain average " + gainAve);
 		}
 
 		return bestAttr;
@@ -215,7 +215,7 @@ public class Dataset implements Cloneable{
 	/** 情報利得率 */
 	private double gainRatio(AbstractAttribute<?> attr) {
 		double infoGain = gain(attr);
-		System.out.print(" InfoGain= " + infoGain);//TODO
+		//System.out.print(" InfoGain= " + infoGain);//TODO
 		return infoGain / splitInfoByAttr(attr);
 	}
 

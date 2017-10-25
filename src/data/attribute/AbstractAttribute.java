@@ -58,6 +58,6 @@ public abstract class AbstractAttribute<E extends Comparable<E>> {
 	/** toString */
 	@Override
 	public String toString() {
-		return "At:" + label;
+		return "A:" + label;
 	}
 }

@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import data.value.NominalValue;
 
@@ -213,5 +212,17 @@ public class MultiConfusionMatrix {
 		double recall = macroRecall();
 		double b2 = beta * beta;
 		return (1 + b2) * precision * recall / (b2 * precision + recall);
+	}
+	
+	
+	@Override
+	public String toString() {
+		return classes.stream().map(nv -> nv.getElem().toString()).collect(Collectors.joining("\t,", "\t", "\n"))
+				+ Arrays.stream(matrix)
+				.map(arr -> Arrays.stream(arr)
+						.boxed()						// IntStream -> Stream<Integer>
+						.map(i -> String.valueOf(i))	// Stream<Integer> -> Stream<String>
+						.collect(Collectors.joining("\t,", "\t", "")))
+				.collect(Collectors.joining("\n", "", "\n"));
 	}
 }
