@@ -44,8 +44,8 @@ public class Main {
 		DecisionTree tree = generator.generateTree(trainData);
 		GraphVizWriter gvw = new GraphVizWriter(datasetPath.resolveSibling("decisionTree.dot"));
 		gvw.writeoutDotFile(tree);
-		
-		
+		//TODO
+		//コマンドプロンプトで生成
 		System.out.println(tree);//TODO
 		System.out.println("\n----------------------------------------\n");
 		
