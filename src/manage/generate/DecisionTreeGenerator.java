@@ -71,11 +71,11 @@ public class DecisionTreeGenerator {
 			if (subDS.isEmpty()) {
 				AbstractValue<?> freqVal = trainData.getMajorityClassValue();
 				LeafNode freqChild = new LeafNode(freqVal);
-				node.addChildNode(branch, freqChild);
+				node.addChild(branch, freqChild);
 			} else {
 				// 再帰的にノードを生成し繋げていく
 				Node<?> recursionChild = generateNode(subDS, baseSize);
-				node.addChildNode(branch, recursionChild);
+				node.addChild(branch, recursionChild);
 			}
 		}
 		return node;

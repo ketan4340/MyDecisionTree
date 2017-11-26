@@ -75,15 +75,13 @@ public abstract class AbstractValue<E extends Comparable<E>> implements Comparab
 		return true;
 	}
 	@Override
-	public String toString() {
-		return "V:" + elem;
-	}
-	
-	@Override
 	public int compareTo(AbstractValue<E> v) {
 		return elem.compareTo(v.elem);
 	}
-	
+	@Override
+	public String toString() {
+		return "V:" + elem;
+	}
 	public String toOriginalString() {
 		return elem.toString();
 	}

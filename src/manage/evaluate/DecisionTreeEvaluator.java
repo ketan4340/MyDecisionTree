@@ -70,10 +70,10 @@ public class DecisionTreeEvaluator {
 	private void countConfusionMatrix(Dataset testData) {
 		MultiConfusionMatrix mcm = new MultiConfusionMatrix(classList);
 		for (Record record : testData.getRecordSet()) {
-			NominalValue actualClass = record.getClassValue();		// このレコードのクラス値
-			NominalValue predictedClass = decisionTree.predictClassOfRecord(record);	// 予測されたクラス値
+			NominalValue actualClass = record.getClassValue();					// このレコードのクラス値
+			NominalValue predictedClass = decisionTree.classify(record.getTuple());	// 予測されたクラス値
 			
-			System.out.println(record + ",\t" + predictedClass);		//TODO
+			System.out.println(record.toOriginalString() + " \t-> " + predictedClass);		//TODO
 			
 			mcm.count(predictedClass, actualClass);
 		}
@@ -81,15 +81,24 @@ public class DecisionTreeEvaluator {
 		multiConfMatrixSet.add(mcm);
 	}
 	
-	
-	public double averageMacroF_measure() {
+	public double averageMicroAccuracy() {
 		return multiConfMatrixSet.stream()
-				.mapToDouble(mcm -> mcm.macroF_measure())
+				.mapToDouble(mcm -> mcm.microAccuracy())
 				.average().getAsDouble();
+	}	
+	public double averageMacroAccuracy() {
+		return multiConfMatrixSet.stream()
+				.mapToDouble(mcm -> mcm.macroAccuracy())
+				.average().getAsDouble();	
 	}
 	public double averageMicroF_measure() {
 		return multiConfMatrixSet.stream()
 				.mapToDouble(mcm -> mcm.microF_measure())
+				.average().getAsDouble();
+	}
+	public double averageMacroF_measure() {
+		return multiConfMatrixSet.stream()
+				.mapToDouble(mcm -> mcm.macroF_measure())
 				.average().getAsDouble();
 	}
 }

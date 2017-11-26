@@ -108,6 +108,7 @@ public class GraphVizWriter {
 	private void writeTail() {
 		writeAppend(TAIL);
 	}
+	
 	private void writeNodes(Collection<? extends Node<?>> nodes, NodeShape shape) {
 		writeAppend(nodes.stream()
 				.map(n -> defineNode(nodeVariables.get(n), n.getLabel().toString(), shape))
@@ -120,6 +121,7 @@ public class GraphVizWriter {
 		define += "];";
 		return define;
 	}
+	
 	private void writeEdges(Collection<? extends Edge<?>> edges, EdgeStyle style) {
 		writeAppend(edges.stream()
 				.map(e -> defineEdge(

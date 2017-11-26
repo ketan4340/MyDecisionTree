@@ -14,29 +14,19 @@ fontname = Gosic,
 fontsize = 16
 ];
 
-	node0	[label = "NA:age", shape = box];
-	node1	[label = "NA:student", shape = box];
-	node2	[label = "NA:credit_rating", shape = box];
-	node3	[label = "NA:credit_rating", shape = box];
-	node4	[label = "NA:age", shape = box];
-	node5	[label = "NV:yes", shape = ellipse];
-	node6	[label = "NV:yes", shape = ellipse];
-	node7	[label = "NV:no", shape = ellipse];
-	node8	[label = "NV:no", shape = ellipse];
-	node9	[label = "NV:yes", shape = ellipse];
-	node10	[label = "NV:yes", shape = ellipse];
-	node11	[label = "NV:yes", shape = ellipse];
-	node12	[label = "NV:no", shape = ellipse];
-	node3	-> node8	[label = "NV:excellent"];
-	node4	-> node10	[label = "NV:middle_aged"];
-	node2	-> node0	[label = "NV:excellent"];
-	node3	-> node5	[label = "NV:fair"];
-	node1	-> node2	[label = "NV:yes"];
-	node0	-> node9	[label = "NV:middle_aged"];
-	node0	-> node6	[label = "NV:youth"];
-	node0	-> node12	[label = "NV:senior"];
-	node1	-> node4	[label = "NV:no"];
-	node4	-> node3	[label = "NV:senior"];
-	node2	-> node11	[label = "NV:fair"];
-	node4	-> node7	[label = "NV:youth"];
+	node0	[label = "NA:student", shape = box];
+	node1	[label = "NA:credit_rating", shape = box];
+	node2	[label = "NA:age", shape = box];
+	node3	[label = "NV:yes", shape = ellipse];
+	node4	[label = "NV:yes", shape = ellipse];
+	node5	[label = "NV:no", shape = ellipse];
+	node6	[label = "NV:no", shape = ellipse];
+	node7	[label = "NV:yes", shape = ellipse];
+	node2	-> node3	[label = "NV:middle_aged"];
+	node0	-> node2	[label = "NV:no"];
+	node1	-> node7	[label = "NV:fair"];
+	node2	-> node5	[label = "NV:youth"];
+	node0	-> node4	[label = "NV:yes"];
+	node2	-> node1	[label = "NV:senior"];
+	node1	-> node6	[label = "NV:excellent"];
 }

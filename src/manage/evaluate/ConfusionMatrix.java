@@ -121,56 +121,72 @@ public class ConfusionMatrix {
 	 * @return PPV=TP/(TP+FP)
 	 */
 	public double positivePredictiveValue() {
-		return (double) truePositive / classifiedPositives();
+		return truePositive == 0 ?
+				truePositive
+				:(double) truePositive / classifiedPositives();
 	}
 	/**
 	 * 偽発見率FDR(False Discovery Rate)
 	 * @return FDR=FP/(TP+FP)=1-PPV
 	 */
 	public double falseDiscoveryRate() {
-		return (double) falsePositive / classifiedPositives();
+		return falsePositive == 0 ?
+				falsePositive
+				:(double) falsePositive / classifiedPositives();
 	}
 	/**
 	 * 陰性適中率NPV(Negative Predictive Value)
 	 * @return NPV=TN/(TN+FN)
 	 */
 	public double negativePredictiveValue() {
-		return (double) trueNegative / classifiedNegatives();
+		return trueNegative == 0 ?
+				trueNegative
+				:(double) trueNegative / classifiedNegatives();
 	}
 	/**
 	 * 陰性偽発見率(仮)NFDR(Negative False Discovery Rate)
 	 * @return FN/(TN+FN)=1-NPV
 	 */
 	public double negativeFalseDiscoveryRate() {
-		return (double) falseNegative / classifiedNegatives();
+		return falseNegative == 0 ?
+				falseNegative
+				:(double) falseNegative / classifiedNegatives();
 	}
 	/**
 	 * 真陽性率TPR(True Positive Rate)
 	 * @return TPR=TP/(TP+FN)
 	 */
 	public double truePositiveRate() {
-		return (double) truePositive / positives();
+		return truePositive == 0 ?
+				truePositive
+				:(double) truePositive / positives();
 	}
 	/**
 	 * 真陰性率TNR(True Negative Rate)
 	 * @return TNR=TN/(TN+FP)
 	 */
 	public double trueNegativeRate() {
-		return (double) trueNegative / negatives();
+		return trueNegative == 0 ?
+				trueNegative
+				:(double) trueNegative / negatives();
 	}
 	/**
 	 * 偽陽性率FPR(False Positive Rate)
 	 * @return FPR=FP/(TN+FP)=1-TNR
 	 */
 	public double falsePositiveRate() {
-		return (double) falsePositive / negatives();
+		return falsePositive == 0 ?
+				falsePositive
+				:(double) falsePositive / negatives();
 	}
 	/**
 	 * 偽陰性率FNR(False Negative Rate)
 	 * @return FNR=FN/(TP+FN)=1-TPR
 	 */
 	public double falseNegativeRate() {
-		return (double) falseNegative / positives();
+		return falseNegative == 0 ?
+				falseNegative
+				: (double) falseNegative / positives();
 	}
 
 	
@@ -180,14 +196,20 @@ public class ConfusionMatrix {
 	 * @return ACC=(TP+TN)/(TP+TN+FP+FN)
 	 */
 	public double accuracy() {
-		return (double) trues() / sum();
+		int trues = trues();
+		return trues == 0 ?
+				trues
+				: (double) trues / sum();
 	}
 	/**
 	 * 誤り率(誤分類率,不正解率)Error Rate
 	 * @return ERR=(FP+FN)/(TP+TN+FP+FN)=1-ACC
 	 */
 	public double errorRate() {
-		return 1-accuracy();
+		int falses = falses();
+		return falses == 0 ? 
+				falses
+				: (double) falses / sum();
 	}
 	/**
 	 * 精度Precision(=PPV)

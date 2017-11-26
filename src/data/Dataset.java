@@ -284,26 +284,4 @@ public class Dataset implements Cloneable{
 		for (Record r : records)
 			r.removeValueInAttr(removeAttr);
 	}
-
-	/**
-	 * 指定された数だけランダムにレコードを抜き出してテストデータを作る
-	 * @param recordNum データセット全体から何個のレコードを抜き出すか
-	 * @return 抜き出されたレコードで構成されたデータセット
-	 */
-	public Dataset pickOutTestData(int recordNum) {
-		int originSize = size();
-		if (recordNum > originSize)
-			return null;
-		Set<Record> subRecords = new HashSet<>(recordNum);
-		List<Record> copiedList = new ArrayList<>(this.getRecordSet());
-
-        for (int i = 0; i < recordNum; i++) {
-            int j = (int) Math.random() * --originSize;
-            Record selectedRecord = copiedList.remove(j);
-            this.records.remove(selectedRecord);
-            subRecords.add(selectedRecord);
-        }
-        return new Dataset(subRecords, attrlist);
-	}
-
 }

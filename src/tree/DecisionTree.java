@@ -4,9 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import data.Record;
 import data.Tuple;
 import data.value.NominalValue;
 import tree.edge.Branch;
@@ -15,7 +13,7 @@ import tree.node.LeafNode;
 import tree.node.Node;
 
 /**
- * 決定木．決定木の根ノードをもつ．
+ * 決定木．メンバは決定木の根ノードのみ．
  * @author tanabekentaro
  */
 public class DecisionTree {
@@ -46,24 +44,29 @@ public class DecisionTree {
 		return "DecisionTree [" + root + "]";
 	}
 	
+	/**
+	 * この{@code DecisionTree}を構成する全ての要素({@code InternalNode}, {@code LeafNode}, {@code Branch})をまとめた，
+	 * {@code DecisionTreeComponents}のインスタンスを返す.
+	 * @return 決定木の構成要素
+	 */
 	public DecisionTreeComponents components() {
 		Set<InternalNode> internalNodes = new HashSet<>();
 		Set<LeafNode> leafNodes = new HashSet<>();
 		Set<Branch> branches = new HashSet<>();
 		
-		List<Node<?>> uncheckedNodes = new LinkedList<>();
+		List<Node<?>> uncheckedNodes = new LinkedList<>();	// 未検査ノードリスト
 		uncheckedNodes.add(root);
-		
-		while (!uncheckedNodes.isEmpty()) {
+
+		while (!uncheckedNodes.isEmpty()) {		// 未検査ノードリストが空になるまで
 			Node<?> node = uncheckedNodes.remove(0);
 		
 			if (node.isLeaf()) {		// 葉ノードまで辿り着いたら
 				leafNodes.add((LeafNode) node);
 			}else {					// 内部ノードなら
 				internalNodes.add((InternalNode) node);
-				branches.addAll(node.getChildEdges().stream().map(e -> (Branch) e).collect(Collectors.toList()));
-
-				uncheckedNodes.addAll(node.getChildrenNodes());	
+				node.getChildEdges().stream().forEach(e -> branches.add((Branch) e));
+				// 未検査ノードリストに子ノードを追加
+				uncheckedNodes.addAll(node.childrenNodes());	
 			}
 		}
 		
@@ -71,29 +74,21 @@ public class DecisionTree {
 	}
 	
 	/**
-	 * 渡されたレコードをこの決定木に適用して，予測されるクラス値を返す．
-	 * @param record レコード
-	 * @return 分類結果のクラス値．
-	 */
-	public NominalValue predictClassOfRecord(Record record) {
-		return applyTuple(record.getTuple());
-	}
-	/**
-	 * この決定木にタプルを適用した分類結果を得る．
+	 * この決定木にタプルを適用した分類結果を得る.
 	 * @param tuple タプル
 	 * @param attrlist タプルに対応した属性リスト
 	 * @return この決定木でタプルが分類されたクラス値．
 	 */
-	private NominalValue applyTuple(Tuple tuple) {
+	public NominalValue classify(Tuple tuple) {
 		Node<?> node = root;
 		while (node != null) {
 			if (node.isLeaf())	// 葉ノードまで辿り着いたら
-				return (NominalValue) ((LeafNode) node).getLabel();	// 葉ノードがもつクラス値を返す
+				// 葉ノードがもつクラス値を返す
+				return (NominalValue) ((LeafNode) node).getLabel();
 			else					// 内部ノードなら
-				node = ((InternalNode) node).getChildMatchTuple(tuple);	// タプルの値に合う子ノードへ進む				
+				// タプルの値に合う子ノードへ進む
+				node = ((InternalNode) node).findChildNodeMatching(tuple);
 		}
 		return null;
 	}
-
-	
 }

@@ -122,21 +122,21 @@ public class MultiConfusionMatrix {
 	}
 	
 	/**
-	 * 正解率MicroAccuracy
+	 * 正解率MicroAccuracy (Overall Accuracy)
 	 * @return MicroAccuracy=SUM(TP)/ALL
 	 */
 	public double microAccuracy() {
 		int tpSum = classes.stream().mapToInt(cls -> truePositive(cls)).sum();
-		int allSum = sumAll();
-		return (double) tpSum / allSum;
+		int all = sumAll();
+		return (double) tpSum / all;
 	}
 	/**
-	 * 正解率MacroAccuracy
+	 * 正解率MacroAccuracy (Average Accuracy)
 	 * @return MacroAccuracy=AVG(TP/(TP+FN)) (MacroRecallと同じになっちゃうんですけどー)
 	 */
 	public double macroAccuracy() {
 		return classes.stream()
-				.mapToInt(cls -> truePositive(cls)/(truePositive(cls)+falseNegative(cls)))
+				.mapToDouble(cls -> (double) truePositive(cls)/(truePositive(cls)+falseNegative(cls)) )
 				.average().getAsDouble();
 	}
 	/**
@@ -209,17 +209,19 @@ public class MultiConfusionMatrix {
 	 */
 	public double macroFw_measure(double beta) {
 		double precision = macroPrecision();
+		System.out.println("pre: " + precision);
 		double recall = macroRecall();
 		double b2 = beta * beta;
 		return (1 + b2) * precision * recall / (b2 * precision + recall);
 	}
 	
-	
+	/**
+	 * 行が予測されたクラス，列が実際のクラス.
+	 */
 	@Override
 	public String toString() {
-		return classes.stream().map(nv -> nv.getElem().toString()).collect(Collectors.joining("\t,", "\t", "\n"))
-				+ Arrays.stream(matrix)
-				.map(arr -> Arrays.stream(arr)
+		return classes.stream().map(nv -> nv.getElem().toString()).collect(Collectors.joining("\t,", "\t", "\n")) + 
+				Arrays.stream(matrix).map(arr -> Arrays.stream(arr)
 						.boxed()						// IntStream -> Stream<Integer>
 						.map(i -> String.valueOf(i))	// Stream<Integer> -> Stream<String>
 						.collect(Collectors.joining("\t,", "\t", "")))

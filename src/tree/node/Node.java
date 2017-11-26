@@ -38,13 +38,13 @@ public class Node<L> {
 		return label;
 	}
 	/* Setter */
-	// 指定されたEdgeの接続先がこのNodeであることも設定する特別なセッター
+	/** 指定されたEdgeの接続先がこのNodeであることも設定する特別なセッター. */
 	public void setParentEdge(Edge<?> parentEdge) {
 		this.parentEdge = parentEdge;
 		if (parentEdge != null)
 			parentEdge.setToNode(this);
 	}
-	// 指定されたEdge全ての接続元がこのNodeであることも設定する特別なセッター
+	/** 指定されたEdge全ての接続元がこのNodeであることも設定する特別なセッター. */
 	public void setChildEdges(List<Edge<?>> childEdges) {
 		this.childEdges = childEdges;
 		childEdges.stream().forEach(ce -> ce.setFromNode(this));
@@ -54,22 +54,27 @@ public class Node<L> {
 	}
 
 	
-	public Node<?> getParentNode() {
+	public Node<?> parentNode() {
 		return parentEdge.getFromNode();
 	}
-	public Node<?> getChildNodeAt(int index) {
+	public Node<?> childNodeAt(int index) {
 		return childEdges.get(index).getToNode();
 	}
-	public List<Node<?>> getChildrenNodes() {
+	public List<Node<?>> childrenNodes() {
 		return childEdges.stream()
 				.map(ce -> ce.getToNode())
 				.collect(Collectors.toList());
+	}
+	public void addChild(Edge<?> edge, Node<?> child) {
+		edge.setFromNode(this);
+		edge.setToNode(child);
+		childEdges.add(edge);	
 	}
 
 	/* toString */
 	@Override
 	public String toString() {
-		return "n[" + getChildrenNodes().stream().map(n -> n.toString()).collect(Collectors.joining(",")) + "]";
+		return "n[" + childrenNodes().stream().map(n -> n.toString()).collect(Collectors.joining(",")) + "]";
 	}
 
 
@@ -79,14 +84,4 @@ public class Node<L> {
 	public boolean isLeaf() {
 		return (childEdges.isEmpty())? true: false;
 	}
-	
-	public void addChildNode(Edge<?> edge, Node<?> child) {
-		edge.setFromNode(this);
-		edge.setToNode(child);
-		addChildEdge(edge);
-	}
-	private void addChildEdge(Edge<?> edge) {
-		childEdges.add(edge);
-	}
-
 }

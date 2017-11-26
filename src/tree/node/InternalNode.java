@@ -42,21 +42,21 @@ public class InternalNode extends Node<AbstractAttribute<?>>{
 	}
 	
 	/**
-	 * 渡されたタプルがもつ属性値と同じ枝の先につながる子ノードを得る．
+	 * 渡されたタプルがもつ属性値と同じ枝の先につながる子ノードを得る.
 	 * @param tuple 参照するタプル
 	 * @return タプルが進む先の子ノード
 	 */
-	public Node<?> getChildMatchTuple(Tuple tuple) {
+	public Node<?> findChildNodeMatching(Tuple tuple) {
 		AbstractValue<?> val = tuple.getValueInAttr(label);
-		Branch matchedBranch = getBranchHaveValue(val);
+		Branch matchedBranch = findBranchOf(val);
 		return matchedBranch.getToNode();
 	}
 	/**
-	 * 与えられた属性値をもつ枝を探す
+	 * 与えられた属性値をもつ枝を探す.
 	 * @param val 属性値
 	 * @return 指定の属性値をもつ枝
 	 */
-	private Branch getBranchHaveValue(AbstractValue<?> val) {
+	private Branch findBranchOf(AbstractValue<?> val) {
 		for (Edge<?> edge : childEdges) {
 			Branch branch = (Branch) edge;
 			if (val.equals(branch.getLabel()))
