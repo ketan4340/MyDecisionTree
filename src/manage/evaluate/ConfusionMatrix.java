@@ -34,22 +34,17 @@ public class ConfusionMatrix {
 	}
 	
 	/* Getter */
-	public int getTP() {
+	public int truePositive() {
 		return truePositive;
 	}
-	public int getTN() {
+	public int trueNegative() {
 		return trueNegative;
 	}
-	public int getFP() {
+	public int falsePositive() {
 		return falsePositive;
 	}
-	public int getFN() {
+	public int falseNegative() {
 		return falseNegative;
-	}
-	
-	@Override
-	public String toString() {
-		return "(TP:"+ truePositive +",TN:"+ trueNegative +",FP:"+ falsePositive +",FN:"+ falseNegative +")";
 	}
 	
 	public void countTP() {
@@ -144,7 +139,7 @@ public class ConfusionMatrix {
 				:(double) trueNegative / classifiedNegatives();
 	}
 	/**
-	 * 陰性偽発見率(仮)NFDR(Negative False Discovery Rate)
+	 * 偽欠損率FOR(False Omission Rate), NFDR(Negative False Discovery Rate)
 	 * @return FN/(TN+FN)=1-NPV
 	 */
 	public double negativeFalseDiscoveryRate() {
@@ -240,22 +235,27 @@ public class ConfusionMatrix {
 		return trueNegativeRate();
 	}
 	/**
-	 * F値(精度と再現率の調和平均)F-measure
-	 * @return F-measure=2*Precision*Recall/(Precision+Recall)
+	 * F値(精度と再現率の調和平均)F-score
+	 * @return F-score=2*Precision*Recall/(Precision+Recall)
 	 */
-	public double f_measure() {
-		return fw_measure(1.0);
+	public double f_score() {
+		return fw_score(1.0);
 	}
 	/**
-	 * 重み付きF値Weighted F-measure
+	 * 重み付きF値Weighted F-score
 	 * @param beta 重み
-	 * @return Fw-measure=(1+b^2)*Precision*Recall/(b^2*Precision+Recall)
+	 * @return Fw-score=(1+b^2)*Precision*Recall/(b^2*Precision+Recall)
 	 */
-	public double fw_measure(double beta) {
+	public double fw_score(double beta) {
 		double precision = precision();
 		double recall = recall();
 		double b2 = beta * beta;
 		return (1 + b2) * precision * recall / (b2 * precision + recall);
 	}
 	
+	
+	@Override
+	public String toString() {
+		return "TP:"+ truePositive +", TN:"+ trueNegative +", FP:"+ falsePositive +", FN:"+ falseNegative;
+	}
 }

@@ -73,7 +73,7 @@ public class DecisionTreeEvaluator {
 			NominalValue actualClass = record.getClassValue();					// このレコードのクラス値
 			NominalValue predictedClass = decisionTree.classify(record.getTuple());	// 予測されたクラス値
 			
-			System.out.println(record.toOriginalString() + " \t-> " + predictedClass);		//TODO
+			System.out.println(record.toOriginalString() + " \t-> " + predictedClass);		//PRINT
 			
 			mcm.count(predictedClass, actualClass);
 		}
@@ -93,12 +93,12 @@ public class DecisionTreeEvaluator {
 	}
 	public double averageMicroF_measure() {
 		return multiConfMatrixSet.stream()
-				.mapToDouble(mcm -> mcm.microF_measure())
+				.mapToDouble(mcm -> mcm.microF_score())
 				.average().getAsDouble();
 	}
 	public double averageMacroF_measure() {
 		return multiConfMatrixSet.stream()
-				.mapToDouble(mcm -> mcm.macroF_measure())
+				.mapToDouble(mcm -> mcm.macroF_score())
 				.average().getAsDouble();
 	}
 }
