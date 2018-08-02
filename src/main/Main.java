@@ -53,6 +53,7 @@ public class Main {
 		System.out.println(tree);//TODO
 		System.out.println("\n----------------------------------------\n");
 		
+		
 		/* 決定木評価 */
 		DecisionTreeEvaluator evaluator = new DecisionTreeEvaluator(tree, classList);
 		evaluator.evaluate(testData);
